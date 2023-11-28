@@ -1,0 +1,23 @@
+{
+  "name": "stack-overflow-server",
+  "version": "1.0.0",
+  "description": "Stack overflow mock app rest api",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngugimuchangi/stack-overflow.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ngugimuchangi/stack-overflow/issues"
+  },
+  "homepage": "https://github.com/ngugimuchangi/stack-overflow#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-cors": "^0.0.3"
+  }
+}
