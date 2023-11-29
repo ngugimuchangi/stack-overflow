@@ -1,6 +1,6 @@
-require('../utils/types');
+require('../common/types');
 
-const constants = require('../utils/constants');
+const constants = require('../common/constants');
 
 /**
  * Custom 404 middleware for unmatched routes
