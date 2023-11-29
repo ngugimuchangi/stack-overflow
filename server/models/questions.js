@@ -1,4 +1,4 @@
-const { Model, Schema } = require('mongoose');
+const { model, Schema } = require('mongoose');
 const Answer = require('./answers');
 
 // Question schema
@@ -14,5 +14,4 @@ const Question = new Schema({
   views: { type: Number, default: 0 },
 });
 
-const QuestionModel = new Model('Questions', Question);
-module.exports = QuestionModel;
+module.exports = model('Questions', Question);

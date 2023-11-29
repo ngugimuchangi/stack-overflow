@@ -1,9 +1,8 @@
-const { Model, Schema } = require('mongoose');
+const { model, Schema } = require('mongoose');
 
 // Tag schema
 const Tag = new Schema({
   name: { type: String, required: true, unique: true },
 });
 
-const TagModel = new Model('Tags', Tag);
-module.exports = TagModel;
+module.exports = model('Tags', Tag);
