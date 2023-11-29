@@ -2,7 +2,7 @@ require('../common/types');
 
 class UserController {
   /**
-   * Get user details
+   * Get users list or user by id
    * @param {Request} req Request object
    * @param {Response} res Response object
    * @param {Next} next Next function
@@ -15,7 +15,7 @@ class UserController {
    * @param {Response} res Response object
    * @param {Next} next Next function
    */
-  createUser(req, res) {}
+  createUser(req, res, next) {}
 
   /**
    * Delete user
@@ -23,7 +23,7 @@ class UserController {
    * @param {Response} res Response object
    * @param {Next} next Next function
    */
-  deleteUser(req, res) {}
+  deleteUser(req, res, next) {}
 }
 
 const controller = new UserController();

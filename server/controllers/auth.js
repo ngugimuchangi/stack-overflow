@@ -1,4 +1,6 @@
 require('../common/types');
+
+const constants = require('../common/constants');
 const User = require('../models/users');
 
 class AuthController {
@@ -18,3 +20,5 @@ class AuthController {
    */
   logout(req, res, next) {}
 }
+
+module.exports = new AuthController();
