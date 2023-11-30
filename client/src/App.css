@@ -5,10 +5,16 @@ body {
   font-family: 'Arial', sans-serif;
 }
 
-/* Banner styles */
-/* styles.css */
+.homepage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Make the homepage take the full height of the viewport */
+}
 
-/* ... (previous styles) */
+.main-body {
+  flex: 1; /* Take the remaining space in the viewport */
+  display: flex;
+}
 
 /* Banner styles */
 .banner {
@@ -36,33 +42,53 @@ body {
 }
 
 
+/* styles.css */
+
+/* ... (previous styles) */
+
 /* Menu styles */
 .menu {
-  display: flex;
-  background-color: #f8f9fa;
+  width: 200px;
+  background-color: #f4f4f4;
   padding: 10px;
+  height: 100%;
+  margin-top: 15%;
 }
 
-.menu-link {
-  cursor: pointer;
-  padding: 8px;
-  margin-right: 10px;
-  border-radius: 5px;
+.menu ul {
+  list-style: none;
+  padding: 0;
 }
 
-.menu-link:hover {
-  background-color: #e2e6ea;
+.menu li {
+  margin-bottom: 5px;
 }
 
-.menu-link.active {
+.menu a {
+  text-decoration: none;
+  color: #333;
+}
+
+.menu li.active {
   background-color: #007bff;
   color: white;
 }
 
+/* ... (remaining styles) */
+
+/* Question styles */
+/* ... (previous styles) */
+
 /* Question styles */
 .questions-section {
-  margin-left: 20px;
+  flex: 1; /* Take the remaining space in the main body */
+  padding: 20px;
+  margin-right: 20px; /* Use margin-right instead of margin-left */
+  margin-top: 10%;
 }
+
+/* ... (remaining styles) */
+
 
 .questions-section h2 {
   color: #007bff;
