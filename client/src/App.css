@@ -1,42 +1,103 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* styles.css */
+
+/* Global styles */
+body {
+  font-family: 'Arial', sans-serif;
+}
+
+/* Banner styles */
+/* styles.css */
+
+/* ... (previous styles) */
+
+/* Banner styles */
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
   text-align: center;
+  display: flex;
+  justify-content: space-between; /* Align children at each end of the flex container */
+  align-items: center; /* Center children vertically within the flex container */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.banner h1 {
+  margin: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.banner input {
+  padding: 5px;
+  margin-top: 10px;
+  margin-right: 2%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+
+/* Menu styles */
+.menu {
+  display: flex;
+  background-color: #f8f9fa;
+  padding: 10px;
 }
 
-.card {
-  padding: 2em;
+.menu-link {
+  cursor: pointer;
+  padding: 8px;
+  margin-right: 10px;
+  border-radius: 5px;
 }
 
-.read-the-docs {
-  color: #888;
+.menu-link:hover {
+  background-color: #e2e6ea;
 }
+
+.menu-link.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Question styles */
+.questions-section {
+  margin-left: 20px;
+}
+
+.questions-section h2 {
+  color: #007bff;
+}
+
+.questions-section button {
+  background-color: #28a745;
+  color: white;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.questions-list {
+  /* Implement scroll bar if needed */
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.question {
+  border-bottom: 1px dotted #ccc;
+  padding: 10px;
+}
+
+.question h2 {
+  margin: 0;
+  color: #343a40;
+}
+
+.question-info {
+  display: flex;
+  justify-content: space-between;
+  color: #868e96;
+}
+
+
