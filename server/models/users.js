@@ -11,12 +11,16 @@ const User = new Schema(
     reputation: { type: Number, default: 0 },
   },
   {
+    timestamps: true,
     methods: {
-      hashPassword: function (password) {
+      hashPassword(password) {
         this.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
       },
-      checkPassword: function (password) {
+      isValidPassword(password) {
         return bcrypt.compareSync(password, this.password);
+      },
+      isAdmin() {
+        return this.status === 'Admin';
       },
     },
   }
