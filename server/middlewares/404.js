@@ -8,10 +8,9 @@ const constants = require('../common/constants');
  * @param {Response} res Response object
  */
 function routerNotFound(req, res) {
-  if (req.method === 'OPTIONS') {
-    if (res.headersSent) return res.end();
-    else return res.status(constants.HTTP_NOT_FOUND).json({ error: 'Not found' });
-  }
+  console.log('Passed here', req.method);
+  if (req.method.toUpperCase === 'OPTIONS') return res.end();
+  else return res.status(constants.HTTP_NOT_FOUND).json({ error: 'Route not found' });
 }
 
 module.exports = routerNotFound;
