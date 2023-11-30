@@ -1,7 +1,7 @@
 require('../common/types');
 
 const User = require('../models/users');
-const constants = require('../common/constants');
+const { HTTP, DOC_LIMIT } = require('../common/constants');
 const formatDoc = require('../utils/format-res');
 
 class UserController {
@@ -13,7 +13,7 @@ class UserController {
    */
   async getUser(req, res, next) {
     const { id } = req.params;
-    const limit = 5;
+    const limit = DOC_LIMIT;
     const page = parseInt(req.query.page) || 0;
     const skip = page * limit;
     const projection = ['email', 'username', 'reputation', 'status'];
@@ -22,11 +22,11 @@ class UserController {
     try {
       if (id) {
         const user = await User.findById(id, projection);
-        if (!user) return res.status(constants.HTTP_NOT_FOUND).json({ message: 'User not found' });
-        res.status(constants.HTTP_OK).json(user);
+        if (!user) return res.status(HTTP.NOT_FOUND).json({ message: 'User not found' });
+        res.status(HTTP.OK).json(user);
       } else {
         const users = await User.find({}, projection, pipeline);
-        res.status(constants.HTTP_OK).json(users);
+        res.status(HTTP.OK).json(users);
       }
     } catch (err) {
       next(err);
@@ -45,13 +45,11 @@ class UserController {
     const statuses = ['General', 'Admin'];
 
     if (!email || !username || !password)
-      return res
-        .status(constants.HTTP_BAD_REQUEST)
-        .json({ message: 'Missing required user details' });
+      return res.status(HTTP.BAD_REQUEST).json({ message: 'Missing required user details' });
 
     try {
       const existingUser = await User.findOne({ email });
-      if (existingUser) return res.status(constants.HTTP_CONFLICT).json({ message: 'User exists' });
+      if (existingUser) return res.status(HTTP.CONFLICT).json({ message: 'User exists' });
 
       const user = new User({ email, username, password });
       if (statuses.includes(status)) user.status = status;
@@ -59,7 +57,7 @@ class UserController {
       user.hashPassword(password);
       await user.save();
 
-      res.status(constants.HTTP_CREATED).json(formatDoc(user, resProps));
+      res.status(HTTP.CREATED).json(formatDoc(user, resProps));
     } catch (err) {
       next(err);
     }
@@ -78,14 +76,13 @@ class UserController {
     try {
       if (user.id !== id && !user.isAdmin())
         return res
-          .status(constants.HTTP_UNAUTHORIZED)
+          .status(HTTP.UNAUTHORIZED)
           .json({ message: 'You are not authorized to delete this user' });
 
       const userToDelete = await User.deleteOne({ _id: id });
-      if (!userToDelete)
-        return res.status(constants.HTTP_NOT_FOUND).json({ message: 'User not found' });
+      if (!userToDelete) return res.status(HTTP.NOT_FOUND).json({ message: 'User not found' });
 
-      res.status(constants.HTTP_OK).json({ message: 'User deleted successfully' });
+      res.status(HTTP.OK).json({ message: 'User deleted successfully' });
     } catch (err) {
       next(err);
     }

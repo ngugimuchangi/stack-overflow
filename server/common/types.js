@@ -1,5 +1,6 @@
 /**
  * @typedef {import('express').Request} Request
+ * @property {import('../models/users')} user
  *
  * @typedef {import('../models/users')} User
  *
