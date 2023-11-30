@@ -7,6 +7,13 @@ const formatDoc = require('../utils/format-res');
 class UserController {
   /**
    * Get users list or user by id
+   *
+   * @example
+   * Sample request: GET /users
+   * Sample request: GET /users?page=0
+   * Sample request: GET /users?page=1
+   * Sample request: GET /users/1234567890
+   *
    * @param {Request} req Request object
    * @param {Response} res Response object
    * @param {Next} next Next function
@@ -38,6 +45,22 @@ class UserController {
    * @param {Request} req Request object
    * @param {Response} res Response object
    * @param {Next} next Next function
+   *
+   * @example
+   * Sample request: POST /users
+   * Sample request body:
+   * {
+   *  "email": "user1@mail.com",
+   *  "username": "user1",
+   *  "password": "1234"
+   * }
+   * Sample response:
+   * {
+   * "email": "user1@mail.com",
+   * "username": "user1",
+   * "reputation": 0,
+   * "status": "General"
+   * }
    */
   async createUser(req, res, next) {
     const resProps = ['email', 'username', 'reputation', 'status'];
@@ -65,9 +88,15 @@ class UserController {
 
   /**
    * Delete user
+   *
    * @param {Request} req Request object
    * @param {Response} res Response object
    * @param {Next} next Next function
+   *
+   * @example
+   * Sample request: DELETE /users/1234567890
+   * Sample response: 204 No Content
+   *
    */
   async deleteUser(req, res, next) {
     const { id } = req.params;
@@ -81,8 +110,7 @@ class UserController {
 
       const userToDelete = await User.deleteOne({ _id: id });
       if (!userToDelete) return res.status(HTTP.NOT_FOUND).json({ message: 'User not found' });
-
-      res.status(HTTP.OK).json({ message: 'User deleted successfully' });
+      res.status(HTTP.NO_CONTENT).end();
     } catch (err) {
       next(err);
     }
