@@ -94,6 +94,12 @@ body {
   cursor: pointer;
 }
 
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 20px;
+}
+
 .questions-list {
   max-height: 400px;
   overflow-y: auto;
