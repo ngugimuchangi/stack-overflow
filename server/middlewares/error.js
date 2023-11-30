@@ -11,13 +11,11 @@ const constants = require('../common/constants');
  * @returns
  */
 function errorHandler(err, _req, res, next) {
-  if (err) {
-    if (res.headersSent) return next(err);
-    else
-      return res
-        .status(err.status || constants.HTTP_INTERNAL_SERVER_ERROR)
-        .json({ error: err.message });
-  }
+  if (res.headersSent) return next(err);
+  else
+    return res
+      .status(err.status || constants.HTTP_INTERNAL_SERVER_ERROR)
+      .json({ error: err.message || 'Oops! Something went wrong' });
 }
 
 module.exports = errorHandler;
