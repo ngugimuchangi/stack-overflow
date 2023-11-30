@@ -11,6 +11,7 @@ const Question = new Schema(
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     answers: [Answer],
     views: { type: Number, default: 0 },
+    votes: { type: Number, default: 0 },
   },
   {
     timestamps: true,

@@ -1,6 +1,6 @@
 require('../common/types');
 
-const constants = require('../common/constants');
+const { HTTP } = require('../common/constants');
 
 /**
  * Custom error handler middleware
@@ -14,7 +14,7 @@ function errorHandler(err, _req, res, next) {
   if (res.headersSent) return next(err);
   else
     return res
-      .status(err.status || constants.HTTP_INTERNAL_SERVER_ERROR)
+      .status(err.status || HTTP.INTERNAL_SERVER_ERROR)
       .json({ error: err.message || 'Oops! Something went wrong' });
 }
 

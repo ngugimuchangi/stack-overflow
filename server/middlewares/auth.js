@@ -4,7 +4,7 @@ const passport = require('passport');
 const { Strategy } = require('passport-jwt');
 const { jwtOptions } = require('../common/config');
 const User = require('../models/users');
-const constants = require('../common/constants');
+const { HTTP } = require('../common/constants');
 
 // JWT Strategy
 const jwtStrategy = new Strategy(jwtOptions, verify);
@@ -41,7 +41,7 @@ async function verify(payload, done) {
 function authorize(req, res, next) {
   const middleware = passport.authenticate('jwt', { session: false }, function (err, user) {
     if (err) return next(err);
-    if (!user) return res.status(constants.HTTP_UNAUTHORIZED).json({ message: 'Unauthorized' });
+    if (!user) return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
     req.user = user;
     next();
   });

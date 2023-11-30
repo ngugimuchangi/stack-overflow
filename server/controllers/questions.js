@@ -1,40 +1,42 @@
 require('../common/types');
 
-const { Question } = require('../models/question');
-const { Answer } = require('../models/answer');
-const { User } = require('../models/user');
-const { Tag } = require('../models/tags');
-const constants = require('../common/constants');
+const Question = require('../models/questions');
+const Tag = require('../models/tags');
+const { HTTP, DOC_LIMIT, MIN_REPS } = require('../common/constants');
 const formatDoc = require('../utils/format-res');
 
 class QuestionController {
   /**
-   * Create a new question
+   * Create a new question resource with specified details
+   *
+   * A user can specify tags for the question. If a tag does not exist, it will be created
+   * if the user has enough reputation points.
+   *
    * @param {Request} req - Request object
    * @param {Response} res - Response object
    * @param {Next} next - Next function
    */
-
   async createQuestion(req, res, next) {
     const { title, summary, text, tags } = req.body;
     const { user } = req;
+    const userProjection = ['_id', 'username', 'reputation'];
+    const questionProjection = ['title', 'summary', 'text', 'tags', 'createdAt', 'updatedAt'];
+
+    if (!title || !summary || !text || !tags)
+      return res.status(HTTP.BAD_REQUEST).json({ message: 'Missing required fields' });
 
     try {
-      // Find or create the tags
       const tagDocs = await Promise.all(
         tags.map(async (tag) => {
           let tagDoc = await Tag.findOne({ name: tag });
-
-          if (!tagDoc) {
-            tagDoc = new Tag({ name: tag });
+          if (!tagDoc && user.reputation >= MIN_REPS) {
+            tagDoc = new Tag({ name: tag, createdBy: user._id });
             await tagDoc.save();
           }
-
           return tagDoc;
         })
       );
 
-      // Create a new question
       const question = new Question({
         title,
         summary,
@@ -42,33 +44,200 @@ class QuestionController {
         user: user._id,
         tags: tagDocs.map((tagDoc) => tagDoc._id),
       });
-
-      // Save the question
       await question.save();
 
-      // Format the question resource response
-      const questionResource = {
-        ...question.toObject(),
-        tags: tagDocs.map((tagDoc) => tagDoc.toObject()),
-        user: user.toObject(),
+      const questionRes = {
+        ...formatDoc(question, questionProjection),
+        tags: tagDocs.map((tagDoc) => tagDoc.name),
+        user: formatDoc(user, userProjection),
       };
-      // Send the question back in the response
-      res.status(constants.HTTP_CREATED).json(questionResource);
+      res.status(HTTP.CREATED).json(questionRes);
     } catch (error) {
-      // Pass the error to the error handling middleware
       next(error);
     }
   }
-  async getQuestion(req, res, next) {}
+  /**
+   * Get questions list or question by id
+   *
+   * If `id` is specified, the question will be returned
+   * Else, a list of questions will be returned. If query parameters are specified,
+   * i.e `q`(query), `t`(tags), the list will be filtered accordingly.
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   */
+  async getQuestion(req, res, next) {
+    const { q, t } = req.query;
+    const page = parseInt(req.query.page) || 0;
+    const { id } = req.params;
+    const limit = DOC_LIMIT;
+    const skip = page * limit;
+    const sort = { createdAt: -1 };
+    const aggregation = { sort, skip, limit };
+    const projection = ['title', 'summary', 'text', 'user', 'tags', 'createdAt', 'updatedAt'];
+    const match = {};
 
-  async deleteQuestion(req, res, next) {}
+    if (q) {
+      const pattern = new RegExp(q, 'i');
+      match.$or = [{ title: pattern }, { summary: pattern }, { text: pattern }];
+    }
 
-  async updateQuestion(req, res, next) {}
+    if (t) {
+      const tags = t.split(';');
+      match.tags = { $in: tags };
+    }
 
-  async getAnswers(req, res, next) {}
-  async createAnswer(req, res, next) {}
-  async deleteAnswer(req, res, next) {}
-  async updateAnswer(req, res, next) {}
+    try {
+      if (id) {
+        const question = Question.findById(id, projection);
+        if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Question not found' });
+        res.status(HTTP.OK).json(question);
+      }
+      const questions = await Question.find(match, projection, aggregation);
+
+      const questionRes = questions.map((question) => this.formatQuestionDoc(question));
+
+      return res.status(HTTP.OK).json(questionRes);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * Update question
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   */
+  async updateQuestion(req, res, next) {
+    const { id } = req.params;
+    const { title, summary, text, tags } = req.body;
+    const { user } = req;
+    const filter = { _id: id, user: user._id };
+    const update = { title, summary, text, tags, votes };
+    const options = { new: true };
+    const projection = ['title', 'summary', 'text', 'tags', 'createdAt', 'updatedAt'];
+
+    try {
+      const question = await Question.findOneAndUpdate(filter, update, options, projection);
+
+      if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Question not found' });
+
+      const questionRes = this.formatQuestionDoc(question);
+      res.status(HTTP.OK).json(questionRes);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * Get answers for a specific question
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   */
+  async getAnswers(req, res, next) {
+    const { id } = req.params;
+    const answerProjection = ['text', 'votes', 'createdAt', 'updatedAt'];
+    const userProjection = ['_id', 'username', 'reputation'];
+    const page = parseInt(req.query.p) || 0;
+    const limit = DOC_LIMIT;
+    const start = page * limit;
+    const end = start + limit;
+
+    try {
+      const question = await Question.findById(id);
+      if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Question not found' });
+
+      const answers = question.answers
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .slice(start, end)
+        .map((answer) => {
+          answer.populate('ansBy');
+          const answerRes = {
+            ...formatDoc(answer, projection, answerProjection),
+            user: formatDoc(answer.ansBy, userProjection),
+          };
+          return answerRes;
+        });
+
+      res.status(HTTP.OK).json(answers);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * Upvote or downvote question
+   *
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   */
+  async voteQuestion(req, res, next) {
+    const { id } = req.params;
+    const { user } = req;
+    const { action } = req.body;
+    const filter = { _id: id };
+    const update = action === 'upvote' ? { $inc: { votes: 1 } } : { $inc: { votes: -1 } };
+    const userUpdate =
+      action === 'upvote'
+        ? { $inc: { reputation: UPVOTE_REPS } }
+        : { $inc: { reputation: DOWNVOTE_REPS } };
+    const options = { new: true };
+    const projection = ['title', 'summary', 'text', 'tags', 'createdAt', 'updatedAt'];
+
+    if (user.reputation < MIN_REPS)
+      return res
+        .status(HTTP.UNAUTHORIZED)
+        .json({ message: `Needs a minimum of ${MIN_REPS} reputation points to vote` });
+    try {
+      const question = await Question.findOneAndUpdate(filter, update, options, projection);
+
+      if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Question not found' });
+
+      await question.populate('user');
+      const askedBy = question.user;
+      await User.findByIdAndUpdate({ _id: askedBy._id }, userUpdate);
+
+      const questionRes = this.formatQuestionDoc(question);
+      res.status(HTTP.OK).json(questionRes);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * Delete question by id
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   */
+  async deleteQuestion(req, res, next) {
+    const { id } = req.params;
+    const { user } = req;
+    const filter = { _id: id, user: user._id };
+    try {
+      const question = await Question.findOneAndDelete(filter);
+
+      if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Question not found' });
+
+      res.status(HTTP.NO_CONTENT).end();
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * Format question document
+   * @param {Question} question Question document
+   * @param {string[]} projection Projection
+   */
+  formatQuestionDoc(question, projection) {
+    const questionRes = projection ? formatDoc(question, projection) : question;
+    questionRes.tags = question.tags.map((tag) => tag.name);
+    return questionRes;
+  }
 }
 
 module.exports = new QuestionController();

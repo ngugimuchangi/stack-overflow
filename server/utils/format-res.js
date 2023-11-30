@@ -6,10 +6,10 @@ require('../common/types');
  * @param {string[]} props Properties to return
  * @returns {object} Formatted document
  */
-function formatRes(doc, props) {
+function formatDoc(doc, props) {
   let res = {};
   props.forEach((prop) => (res[prop] = doc[prop]));
   return res;
 }
 
-module.exports = formatRes;
+module.exports = formatDoc;

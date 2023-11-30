@@ -1,6 +1,6 @@
 require('../common/types');
 
-const constants = require('../common/constants');
+const { HTTP } = require('../common/constants');
 const jwt = require('jwt-simple');
 const User = require('../models/users');
 const { jwtOptions } = require('../common/config');
@@ -16,19 +16,19 @@ class AuthController {
     const { email, password } = req.body;
 
     if (!email || !password)
-      return res.status(constants.HTTP_BAD_REQUEST).json({ message: 'Missing credentials' });
+      return res.status(HTTP.BAD_REQUEST).json({ message: 'Missing credentials' });
 
     try {
       const user = await User.findOne({ email });
       console.log(user);
-      if (!user) return res.status(constants.HTTP_NOT_FOUND).json({ message: 'User not found' });
+      if (!user) return res.status(HTTP.NOT_FOUND).json({ message: 'User not found' });
 
       if (!user.isValidPassword(password))
-        return res.status(constants.HTTP_UNAUTHORIZED).json({ message: 'Invalid password' });
+        return res.status(HTTP.UNAUTHORIZED).json({ message: 'Invalid password' });
 
       const payload = { id: user.id, expire: Date.now() + jwtOptions.expiresIn };
       const token = jwt.encode(payload, jwtOptions.secretOrKey);
-      res.status(constants.HTTP_OK).json({ token });
+      return res.status(HTTP.OK).json({ token });
     } catch (err) {
       next(err);
     }
@@ -41,7 +41,7 @@ class AuthController {
    * @param {Next} _next Next function
    */
   logout(_req, res, _next) {
-    res.status(constants.HTTP_OK).json({ message: 'Logout successful' });
+    res.status(HTTP.OK).json({ message: 'Logout successful' });
   }
 }
 
