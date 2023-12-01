@@ -15,6 +15,31 @@ class QuestionController {
    * @param {Request} req - Request object
    * @param {Response} res - Response object
    * @param {Next} next - Next function
+   *
+   * @example
+   * Sample request: POST /questions
+   * Sample request body:
+   * {
+   * "title": "Question 1",
+   * "summary": "Question 1 summary",
+   * "text": "Question 1 text",
+   * "tags": ["tag1", "tag2"]
+   * }
+   * Sample response:
+   * {
+   *  "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *  "title": "Question 1",
+   *  "summary": "Question 1 summary",
+   *  "text": "Question 1 text",
+   *  "tags": ["tag1", "tag2"],
+   *  "createdAt": "2020-01-02T07:26:02.000Z",
+   *  "updatedAt": "2020-01-02T07:26:02.000Z",
+   *  "user": {
+   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *    "username": "user1",
+   *    "reputation": 0
+   *  }
+   * }
    */
   async createQuestion(req, res, next) {
     const { title, summary, text, tags } = req.body;
@@ -195,18 +220,19 @@ class QuestionController {
    * Sample request: GET /questions/1234567890/answers
    * Sample response:
    * [
-   * {
-   * "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
-   * "text": "Answer 1",
-   * "votes": 5,
-   * "createdAt": "2020-01-02T07:26:02.000Z",
-   * "updatedAt": "2020-01-02T07:26:02.000Z",
-   * "user": {
-   * "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
-   * "username": "user1",
-   * "reputation": 0
-   * }
-   * },]
+   *  {
+   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *    "text": "Answer 1",
+   *    "votes": 5,
+   *    "createdAt": "2020-01-02T07:26:02.000Z",
+   *    "updatedAt": "2020-01-02T07:26:02.000Z",
+   *    "user": {
+   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *    "username": "user1",
+   *    "reputation": 0
+   *    }
+   *  }
+   * ]
    *
    */
   async getAnswers(req, res, next) {
