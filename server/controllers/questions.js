@@ -62,9 +62,23 @@ class QuestionController {
    * If `id` is specified, the question will be returned
    * Else, a list of questions will be returned. If query parameters are specified,
    * i.e `q`(query), `t`(tags), the list will be filtered accordingly.
+   *
    * @param {Request} req Request object
    * @param {Response} res Response object
    * @param {Next} next Next function
+   * @example
+   * Sample request: GET /questions
+   * Sample response:
+   * [
+   * {
+   *  "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   * "title": "Question 1",
+   * "summary": "Question 1 summary",
+   * "text": "Question 1 text",
+   * "tags": ["tag1", "tag2"],
+   * "createdAt": "2020-01-02T07:26:02.000Z",
+   * "updatedAt": "2020-01-02T07:26:02.000Z"
+   * },
    */
   async getQuestion(req, res, next) {
     const { q, t } = req.query;
@@ -74,7 +88,16 @@ class QuestionController {
     const skip = page * limit;
     const sort = { createdAt: -1 };
     const aggregation = { sort, skip, limit };
-    const projection = ['title', 'summary', 'text', 'user', 'tags', 'createdAt', 'updatedAt'];
+    const projection = [
+      'title',
+      'summary',
+      'text',
+      'user',
+      'tags',
+      'createdAt',
+      'updatedAt',
+      'votes',
+    ];
     const match = {};
 
     if (q) {
@@ -108,15 +131,47 @@ class QuestionController {
    * @param {Request} req Request object
    * @param {Response} res Response object
    * @param {Next} next Next function
+   * @example
+   * Sample request: PUT /questions/1234567890
+   * Sample request body:
+   * {
+   * "title": "Question 1",
+   * "summary": "Question 1 summary",
+   * "text": "Question 1 text",
+   * "tags": ["tag1", "tag2"],
+   * "votes": 5,
+   * "views": 10
+   * }
+   * Sample response:
+   * {
+   *  "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *  "title": "Question 1",
+   *  "summary": "Question 1 summary",
+   *  "text": "Question 1 text",
+   *  "tags": ["tag1", "tag2"],
+   *  "votes": 5,
+   *  "views": 10,
+   *  "updatedAt": "2020-01-02T07:26:02.000Z"
+   *  "createdAt": "2020-01-02T07:26:02.000Z",
+   * }
    */
   async updateQuestion(req, res, next) {
     const { id } = req.params;
-    const { title, summary, text, tags } = req.body;
+    const { title, summary, text, tags, votes, views } = req.body;
     const { user } = req;
     const filter = { _id: id, user: user._id };
-    const update = { title, summary, text, tags, votes };
+    const update = { title, summary, text, tags, votes, views };
     const options = { new: true };
-    const projection = ['title', 'summary', 'text', 'tags', 'createdAt', 'updatedAt'];
+    const projection = [
+      'title',
+      'summary',
+      'text',
+      'tags',
+      'views',
+      'votes',
+      'createdAt',
+      'updatedAt',
+    ];
 
     try {
       const question = await Question.findOneAndUpdate(filter, update, options, projection);
@@ -135,12 +190,30 @@ class QuestionController {
    * @param {Request} req Request object
    * @param {Response} res Response object
    * @param {Next} next Next function
+   * @example
+   * Sample request: GET /questions/1234567890/answers?page=0
+   * Sample request: GET /questions/1234567890/answers
+   * Sample response:
+   * [
+   * {
+   * "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   * "text": "Answer 1",
+   * "votes": 5,
+   * "createdAt": "2020-01-02T07:26:02.000Z",
+   * "updatedAt": "2020-01-02T07:26:02.000Z",
+   * "user": {
+   * "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   * "username": "user1",
+   * "reputation": 0
+   * }
+   * },]
+   *
    */
   async getAnswers(req, res, next) {
     const { id } = req.params;
     const answerProjection = ['text', 'votes', 'createdAt', 'updatedAt'];
     const userProjection = ['_id', 'username', 'reputation'];
-    const page = parseInt(req.query.p) || 0;
+    const page = parseInt(req.query.page) || 0;
     const limit = DOC_LIMIT;
     const start = page * limit;
     const end = start + limit;
@@ -212,6 +285,9 @@ class QuestionController {
    * @param {Request} req Request object
    * @param {Response} res Response object
    * @param {Next} next Next function
+   * @example
+   * Sample request: DELETE /questions/1234567890
+   * Sample response: 204 No Content
    */
   async deleteQuestion(req, res, next) {
     const { id } = req.params;
