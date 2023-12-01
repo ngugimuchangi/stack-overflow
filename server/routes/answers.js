@@ -4,7 +4,7 @@ const controller = require('../controllers/answers');
 
 const router = Router();
 
-router.post('/:id', verify, controller.createAnswer);
+router.post('/', verify, controller.createAnswer);
 router.put('/:id', verify, controller.updateAnswer);
 router.patch('/:id/vote', verify, controller.voteAnswer);
 router.delete('/:id', verify, controller.deleteAnswer);

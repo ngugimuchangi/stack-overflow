@@ -31,7 +31,7 @@ class AnswersController {
    *
    */
   async createAnswer(req, res, next) {
-    const { questionId, text } = req.params;
+    const { questionId, text } = req.body;
     const { user } = req;
     const answerProjection = ['_id', 'text', 'votes', 'createdAt', 'updatedAt'];
     const userProjection = ['_id', 'username', 'reputation'];
