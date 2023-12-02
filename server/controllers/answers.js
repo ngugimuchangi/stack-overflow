@@ -1,3 +1,5 @@
+require('../common/types');
+
 const Answer = require('../models/answers');
 const Question = require('../models/questions');
 const { HTTP, MIN_REPS, UPVOTE_REPS, DOWNVOTE_REPS } = require('../common/constants');
@@ -9,7 +11,7 @@ class AnswersController {
    * @param {Response} res Response object
    * @param {Next} next Next function
    * @example
-   * Sample request: POST /answers
+   * Sample request: POST questions/1234567890/answers
    * Sample request body:
    * {
    *  "questionId": "5e0f0f6a8b40fc1b8c3b9f3e",
@@ -31,10 +33,12 @@ class AnswersController {
    *
    */
   async createAnswer(req, res, next) {
-    const { questionId, text } = req.body;
+    const { questionId } = req.params;
+    const { text } = req.body;
     const { user } = req;
     const answerProjection = ['_id', 'text', 'votes', 'createdAt', 'updatedAt'];
     const userProjection = ['_id', 'username', 'reputation'];
+
     if (!questionId || !text)
       return res.status(HTTP.BAD_REQUEST).json({ message: 'Missing required fields' });
     try {
@@ -56,12 +60,68 @@ class AnswersController {
     }
   }
   /**
+   * Get answers for a specific question
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   * @example
+   * Sample request: GET /questions/1234567890/answers?page=0
+   * Sample request: GET /questions/1234567890/answers
+   * Sample response:
+   * [
+   *  {
+   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *    "text": "Answer 1",
+   *    "votes": 5,
+   *    "createdAt": "2020-01-02T07:26:02.000Z",
+   *    "updatedAt": "2020-01-02T07:26:02.000Z",
+   *    "user": {
+   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *    "username": "user1",
+   *    "reputation": 0
+   *    }
+   *  }
+   * ]
+   *
+   */
+  async getAnswers(req, res, next) {
+    const { id } = req.params;
+    const answerProjection = ['text', 'votes', 'createdAt', 'updatedAt'];
+    const userProjection = ['_id', 'username', 'reputation'];
+    const page = parseInt(req.query.page) || 0;
+    const limit = DOC_LIMIT;
+    const start = page * limit;
+    const end = start + limit;
+
+    try {
+      const question = await Question.findById(id);
+      if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Question not found' });
+
+      const answers = question.answers
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .slice(start, end)
+        .map((answer) => {
+          answer.populate('ansBy');
+          const answerRes = {
+            ...formatDoc(answer, projection, answerProjection),
+            user: formatDoc(answer.ansBy, userProjection),
+          };
+          return answerRes;
+        });
+
+      res.status(HTTP.OK).json(answers);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
    * Update answer
    * @param {Request} req Request object
    * @param {Response} res Response object
    * @param {Next} next Next function
    * @example
-   * Sample request: PUT /answers/1234567890
+   * Sample request: PUT /questions/1234567890/answers/1234567890
    * Sample request body:
    * {
    *  "questionId": "5e0f0f6a8b40fc1b8c3b9f3e",
@@ -82,8 +142,8 @@ class AnswersController {
    *  }
    */
   async updateAnswer(req, res, next) {
-    const { answerId } = req.params;
-    const { questionId, text } = req.body;
+    const { questionId, answerId } = req.params;
+    const { text } = req.body;
     const { user } = req;
     const filter = { _id: questionId, 'answers._id': answerId, 'answers.ansBy': user._id };
     const update = { $set: { 'answers.$.text': text } };
@@ -118,12 +178,9 @@ class AnswersController {
    * @param {Response} res Response object
    * @param {Next} next Next function
    * @example
-   * Sample request: PUT /answers/1234567890/vote
+   * Sample request: PUT /questions/1234567890/answers/1234567890/vote
    * Sample request body:
-   * {
-   * "questionId": "5e0f0f6a8b40fc1b8c3b9f3e",
-   * "action": "upvote"
-   * }
+   * { "action": "upvote" }
    * Sample response:
    * {
    *  "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
@@ -139,8 +196,8 @@ class AnswersController {
    * }
    */
   async voteAnswer(req, res, next) {
-    const { answerId } = req.params;
-    const { questionId, action } = req.body;
+    const { questionId, answerId } = req.params;
+    const { action } = req.body;
     const { user } = req;
     const filter = { _id: questionId, 'answers._id': answerId };
     const update =
@@ -184,7 +241,7 @@ class AnswersController {
    * @param {Response} res Response object
    * @param {Next} next Next function
    * @example
-   * Sample request: DELETE /answers/1234567890
+   * Sample request: DELETE /questions/1234567890/answers/1234567890
    * Sample response: 204 No Content
    */
   async deleteAnswer(req, res, next) {

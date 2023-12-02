@@ -105,7 +105,7 @@ class QuestionController {
    * "updatedAt": "2020-01-02T07:26:02.000Z"
    * },
    */
-  async getQuestion(req, res, next) {
+  async getQuestions(req, res, next) {
     const { q, t } = req.query;
     const page = parseInt(req.query.page) || 0;
     const { id } = req.params;
@@ -205,62 +205,6 @@ class QuestionController {
 
       const questionRes = this.formatQuestionDoc(question);
       res.status(HTTP.OK).json(questionRes);
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  /**
-   * Get answers for a specific question
-   * @param {Request} req Request object
-   * @param {Response} res Response object
-   * @param {Next} next Next function
-   * @example
-   * Sample request: GET /questions/1234567890/answers?page=0
-   * Sample request: GET /questions/1234567890/answers
-   * Sample response:
-   * [
-   *  {
-   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
-   *    "text": "Answer 1",
-   *    "votes": 5,
-   *    "createdAt": "2020-01-02T07:26:02.000Z",
-   *    "updatedAt": "2020-01-02T07:26:02.000Z",
-   *    "user": {
-   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
-   *    "username": "user1",
-   *    "reputation": 0
-   *    }
-   *  }
-   * ]
-   *
-   */
-  async getAnswers(req, res, next) {
-    const { id } = req.params;
-    const answerProjection = ['text', 'votes', 'createdAt', 'updatedAt'];
-    const userProjection = ['_id', 'username', 'reputation'];
-    const page = parseInt(req.query.page) || 0;
-    const limit = DOC_LIMIT;
-    const start = page * limit;
-    const end = start + limit;
-
-    try {
-      const question = await Question.findById(id);
-      if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Question not found' });
-
-      const answers = question.answers
-        .sort((a, b) => b.createdAt - a.createdAt)
-        .slice(start, end)
-        .map((answer) => {
-          answer.populate('ansBy');
-          const answerRes = {
-            ...formatDoc(answer, projection, answerProjection),
-            user: formatDoc(answer.ansBy, userProjection),
-          };
-          return answerRes;
-        });
-
-      res.status(HTTP.OK).json(answers);
     } catch (err) {
       next(err);
     }

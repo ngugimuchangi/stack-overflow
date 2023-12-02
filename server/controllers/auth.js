@@ -37,7 +37,8 @@ class AuthController {
       if (!user.isValidPassword(password))
         return res.status(HTTP.UNAUTHORIZED).json({ message: 'Invalid password' });
 
-      const payload = { id: user.id, expire: Date.now() + jwtOptions.expiresIn };
+      const payload = { id: user._id.toString(), expire: Date.now() + jwtOptions.expiresIn };
+      console.log(payload);
       const token = jwt.encode(payload, jwtOptions.secretOrKey);
       return res.status(HTTP.OK).json({ token });
     } catch (err) {

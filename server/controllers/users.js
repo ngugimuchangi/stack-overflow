@@ -1,6 +1,7 @@
 require('../common/types');
 
 const User = require('../models/users');
+const Tag = require('../models/tags');
 const { HTTP, DOC_LIMIT } = require('../common/constants');
 const formatDoc = require('../utils/format-res');
 
@@ -19,7 +20,8 @@ class UserController {
    * @param {Next} next Next function
    */
   async getUser(req, res, next) {
-    const { id } = req.params;
+    const id = req.params.userId;
+    const { user } = req;
     const limit = DOC_LIMIT;
     const page = parseInt(req.query.page) || 0;
     const skip = page * limit;
@@ -27,9 +29,12 @@ class UserController {
     const pipeline = { skip, limit };
 
     try {
-      if (id) {
+      const currentUser = await User.findById(user.id);
+
+      if (id && (currentUser.isAdmin() || user.id === id)) {
         const user = await User.findById(id, projection);
         if (!user) return res.status(HTTP.NOT_FOUND).json({ message: 'User not found' });
+
         res.status(HTTP.OK).json(user);
       } else {
         const users = await User.find({}, projection, pipeline);
@@ -99,11 +104,12 @@ class UserController {
    *
    */
   async deleteUser(req, res, next) {
-    const { id } = req.params;
+    const id = req.params.userId;
     const { user } = req;
 
     try {
-      if (user.id !== id && !user.isAdmin())
+      const currentUser = await User.findById(user.id);
+      if (!currentUser || (!user.id !== id && !currentUser.isAdmin()))
         return res
           .status(HTTP.UNAUTHORIZED)
           .json({ message: 'You are not authorized to delete this user' });
@@ -113,6 +119,57 @@ class UserController {
       res.status(HTTP.NO_CONTENT).end();
     } catch (err) {
       next(err);
+    }
+  }
+
+  /**
+   * Get user tags along with the count of questions for each tag.
+   *
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   *
+   * @example
+   * Sample request: GET /users/1234567890/tags
+   * Sample response:
+   * [
+   *  {
+   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *    "name": "tag1",
+   *    "questionCount": 10
+   *  },
+   *  {
+   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3f",
+   *    "name": "tag2",
+   *    "questionCount": 5
+   *  }
+   * ]
+   *
+   */
+  async getUserTags(req, res, next) {
+    const { userId } = req.params;
+    try {
+      const tags = await Tag.aggregate([
+        { $match: { createdBy: userId } },
+        {
+          $lookup: {
+            from: 'questions',
+            localField: '_id',
+            foreignField: 'tags',
+            as: 'questions',
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            questionCount: { $size: '$questions' },
+          },
+        },
+      ]);
+      res.status(200).json(tags);
+    } catch (error) {
+      next(error);
     }
   }
 }

@@ -1,14 +1,17 @@
 const { Router } = require('express');
 const verify = require('../middlewares/auth');
 const controller = require('../controllers/questions');
-const router = Router();
+const answerRouter = require('./answers');
 
-router.get('/', controller.getQuestion);
-router.get('/:id', controller.getQuestion);
-router.get('/:id/answers', controller.getAnswers);
+const router = Router({ mergeParams: true });
+
+router.use('/:questionId/answers', answerRouter);
+
+router.get('/', controller.getQuestions);
+router.get('/:questionId', controller.getQuestions);
 router.post('/', verify, controller.createQuestion);
-router.put('/:id', verify, controller.updateQuestion);
-router.post('/:id/vote', verify, controller.voteQuestion);
-router.delete('/:id', verify, controller.deleteQuestion);
+router.put('/:questionId', verify, controller.updateQuestion);
+router.patch('/:questionId/vote', verify, controller.voteQuestion);
+router.delete('/:questionId', verify, controller.deleteQuestion);
 
 module.exports = router;
