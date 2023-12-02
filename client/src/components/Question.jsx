@@ -1,21 +1,21 @@
-
 import React from 'react';
 
-const Question = ({ question }) => {
-  // Implement the date formatting logic here
-
+function Question({ question }) {
+  // TODO: Implement the logic for displaying the question metadata
   return (
-    <div className="question">
-      <div className="question-info">
-        <span>{/* No. of answers */}</span>
-        <span>{/* No. of views */}</span>
+    <div className='question'>
+      <div className='question-info'>
+        <span>{question.answers.length} answers</span>
+        <span>{question.views} views</span>
       </div>
-      <div className="question-details">
+      <div className='question-details'>
         <h2>{question.title}</h2>
-        <p>{/* Question metadata */}</p>
+        <p>
+          {question.user} asked {question.date}
+        </p>
       </div>
     </div>
   );
-};
+}
 
 export default Question;

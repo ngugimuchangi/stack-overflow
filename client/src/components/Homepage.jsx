@@ -2,36 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Banner from './Banner';
 import Menu from './Menu';
 import Question from './Question';
-import globalService from '../services/global';
-import environment from '../environment/environment';
+import questionService from '../services/questions';
+function Homepage() {
+  const [questions, setQuestions] = useState([]);
 
-const Homepage = () => {
-  const [newestQuestions, setNewestQuestions] = useState([]);
+  useEffect(() => {}, []);
 
-  useEffect(() => {
-    fetch(globalService.serverUrl + environment.getQuestionsAPI)
-      .then((response) => response.json())
-      .then((data) => setNewestQuestions(data));
-  }, []);
-
-  const handleNewestButtonClick = () => {
-    // Open the newest questions page using AJAX
-    fetch(global.server + environment.getQuestionsAPI)
-      .then((response) => response.json())
-      .then((data) => {
-        setNewestQuestions(data);
-      });
-  };
-
-  const handleActiveButtonClick = () => {
-    // Open the active questions page
-    window.location.href = '/active';
-  };
-
-  const handleUnansweredButtonClick = () => {
-    // Open the unanswered questions page
-    window.location.href = '/unanswered';
-  };
+  const handleNewestButtonClick = () => [];
+  const handleActiveButtonClick = () => [];
+  const handleUnansweredButtonClick = () => [];
 
   return (
     <div className='homepage'>
@@ -48,13 +27,13 @@ const Homepage = () => {
             <button onClick={handleActiveButtonClick}>Active</button>
             <button onClick={handleUnansweredButtonClick}>Unanswered</button>
           </div>
-          {newestQuestions.map((question) => (
+          {questions.map((question) => (
             <Question key={question.id} question={question} />
           ))}
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Homepage;

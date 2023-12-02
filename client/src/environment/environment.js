@@ -5,14 +5,28 @@ export const authAPI = {
   logout: '/auth/logout',
 };
 
-export const getQuestionsAPI = '/questions';
+const getQuestionsAPI = '/questions';
 
-export const answersAPI = '/answers';
+const answersAPI = '/answers';
 
-export const commentsAPI = '/comments';
+const commentsAPI = '/comments';
 
-export const tagsAPI = '/tags';
+const tagsAPI = '/tags';
 
-export const votesAPI = '/votes';
+const votesAPI = '/votes';
 
-export default { userAPI, auth, getQuestionsAPI, answersAPI, commentsAPI, tagsAPI, votesAPI };
+export const API = {
+  userAPI,
+  authAPI,
+  getQuestionsAPI,
+  answersAPI,
+  commentsAPI,
+  tagsAPI,
+  votesAPI,
+};
+
+const env = {
+  API: { userAPI, authAPI, getQuestionsAPI, answersAPI, commentsAPI, tagsAPI, votesAPI },
+};
+
+export default env;

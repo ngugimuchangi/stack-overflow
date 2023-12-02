@@ -1,16 +1,16 @@
 import React from 'react';
 
-const Menu = ({ activeLink }) => {
+function Menu({ activeLink }) {
   return (
-    <div className="menu">
-      <div className={`menu-link ${activeLink === 'questions' ? 'active' : ''}`}>
+    <div className='menu'>
+      <a href='/questions' className={activeLink === 'questions' ? 'active' : ''}>
         Questions
-      </div>
-      <div className={`menu-link ${activeLink === 'tags' ? 'active' : ''}`}>
+      </a>
+      <a href='/tags' className={activeLink === 'tags' ? 'active' : ''}>
         Tags
-      </div>
+      </a>
     </div>
   );
-};
+}
 
 export default Menu;
