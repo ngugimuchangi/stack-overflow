@@ -3,9 +3,10 @@ export const userAPI = '/users';
 export const authAPI = {
   login: '/auth/login',
   logout: '/auth/logout',
+  signup: '/users',
 };
 
-const getQuestionsAPI = '/questions';
+const questionsAPI = '/questions';
 
 const answersAPI = '/answers';
 
@@ -18,7 +19,7 @@ const votesAPI = '/votes';
 export const APIs = {
   userAPI,
   authAPI,
-  getQuestionsAPI,
+  questionsAPI,
   answersAPI,
   commentsAPI,
   tagsAPI,
@@ -26,7 +27,7 @@ export const APIs = {
 };
 
 const env = {
-  API: { userAPI, authAPI, getQuestionsAPI, answersAPI, commentsAPI, tagsAPI, votesAPI },
+  API: { userAPI, authAPI, questionsAPI, answersAPI, commentsAPI, tagsAPI, votesAPI },
 };
 
 export default env;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../../button/button';
-import authService from '../../../services/auth-service';
+import userServices from '../../../services/user-service';
 import { Link, useNavigate } from 'react-router-dom';
 import './signup-form.css';
 
@@ -13,6 +13,7 @@ export default function SignupForm() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   /**
@@ -20,15 +21,24 @@ export default function SignupForm() {
    *
    * @param {Event} event - The form submission event.
    */
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO: Implement the logic for user authentication
-    console.log(`Email: ${email}, Password: ${password} Username: ${username}`);
-    navigate('/login');
+    if (!username || !email || !password) return;
+    try {
+      await userServices.signup(username, email, password);
+      navigate('/login');
+    } catch (err) {
+      setError('Username or email already exists');
+      const timeoutId = setTimeout(() => {
+        setError(''), 5000;
+        clearTimeout(timeoutId);
+      });
+    }
   };
 
   return (
     <form className='signup-form' onSubmit={handleSubmit}>
+      <div className={error ? 'error' : ''}>{error}</div>
       <label>
         Username:
         <input
@@ -53,7 +63,7 @@ export default function SignupForm() {
       </label>
 
       <div className='login-signup-container'>
-        <Button type='submit' text='Signup' classes='underline-btn login-signup-btn' />
+        <Button type='submit' text='SignUp' classes='underline-btn login-signup-btn' />
         <span>or</span>
         <Link to='/login'>
           <Button text='Login' classes='underline-btn login-signup-btn' />

@@ -10,6 +10,9 @@ import UnauthorizedPage from '../pages/unauthorized/unauthorized-page';
 import TagsPage from '../pages/tags/tags-page';
 import AuthLayout from '../layouts/auth-layout/auth-layout';
 import ProfilePage from '../pages/profile/profile-page';
+
+import questionsService from '../services/questions-service';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -18,6 +21,7 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <HomePage />,
+        loader: questionsService.getAllQuestions,
       },
       {
         path: 'new-question',

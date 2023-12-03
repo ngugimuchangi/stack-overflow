@@ -18,3 +18,19 @@
 .search-res-text {
   margin-block: 0.5rem;
 }
+
+.nav-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.action-btn.btn-disabled,
+.action-btn.btn-disabled:hover {
+  background-color: #6ca0dc;
+}

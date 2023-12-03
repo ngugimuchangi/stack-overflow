@@ -37,11 +37,12 @@ export default function BaseLayout() {
         <div className='base-layout-main-content'>
           <div className='base-layout-action-btn-container'>
             {authService.isLoggedIn() ? (
-              <Button
-                text='Logout'
-                classes='logout-btn clear-btn base-layout-action-btn'
-                onClick={logout}
-              />
+              <div className='logged-in-user-actions base-layout-action-btn'>
+                <Link to='/profile' className='base-layout-action-btn'>
+                  <Button text='Profile' classes='clear-btn' />
+                </Link>
+                <Button text='Logout' classes='logout-btn clear-btn' onClick={logout} />
+              </div>
             ) : (
               <Link to='/login' className='base-layout-action-btn'>
                 <Button text='Login' classes='clear-btn' />

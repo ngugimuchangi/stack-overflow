@@ -1,7 +1,7 @@
-import SignupForm from '../../components/forms/signup/singup-form';
+import SignupForm from '../../components/forms/signup/signup-form';
 import './signup-page.css';
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <div className='signup-page'>
       <SignupForm />

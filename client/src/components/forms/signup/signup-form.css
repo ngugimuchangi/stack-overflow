@@ -1,7 +1,6 @@
 .signup-form {
   width: 400px;
 }
-
 .signup-form input {
   margin-bottom: 1rem;
 }
@@ -14,4 +13,11 @@
 
 .login-signup-btn:hover {
   color: #5b8ac6;
+}
+.error {
+  color: red;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  text-align: center;
 }
