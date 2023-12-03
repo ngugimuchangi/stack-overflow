@@ -18,7 +18,8 @@
   gap: 1rem;
   width: 100%;
 }
-.base-layout-action-btn:first-of-type {
+
+.base-layout-action-btn:first-child {
   margin-left: auto;
 }
 

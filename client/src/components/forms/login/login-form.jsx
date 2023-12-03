@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../../button/button';
 import authService from '../../../services/auth-service';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './login-form.css';
 
 /**
@@ -12,16 +12,22 @@ import './login-form.css';
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   /**
    * Handles the form submission event.
    *
    * @param {Event} event - The form submission event.
    */
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO: Implement the logic for user authentication
-    console.log(`Email: ${email}, Password: ${password}`);
+    if (!email || !password) return;
+    try {
+      await authService.login(email, password);
+      navigate('/');
+    } catch (err) {
+      alert('Invalid email or password.');
+    }
   };
 
   return (
@@ -40,10 +46,10 @@ export default function LoginForm() {
         />
       </label>
       <div className='login-signup-container'>
-        <Button type='submit' text='Login' classes='underline-btn' />
+        <Button type='submit' text='Login' classes='underline-btn login-signup-btn' />
         <span>or</span>
         <Link to='/signup'>
-          <Button text='Signup' classes='underline-btn' />
+          <Button text='Signup' classes='underline-btn login-signup-btn' />
         </Link>
       </div>
     </form>

@@ -7,7 +7,8 @@ function Banner() {
   return (
     <header>
       <div className='header-content'>
-        <Link to='/' className='header-text'>
+        <Link to='/' className='logo-and-text'>
+          <img src='src/assets/logo.svg' alt='logo' className='logo' />
           <h1>Fake Stack Overflow</h1>
         </Link>
         <Search />

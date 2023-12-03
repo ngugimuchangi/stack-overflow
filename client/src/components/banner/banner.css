@@ -2,16 +2,20 @@
   background-color: #ccc;
   padding: 1rem 0.5rem;
   display: flex;
+
+  align-items: baseline;
   border-bottom: 1px solid #000;
 }
-
-.header-text {
+.logo-and-text {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 14px;
   margin-inline: auto;
   color: #000;
 }
 
-.header-text:hover {
+.logo-and-text:hover {
   color: #000;
 }

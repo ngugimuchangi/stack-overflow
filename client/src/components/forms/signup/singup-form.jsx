@@ -53,10 +53,10 @@ export default function SignupForm() {
       </label>
 
       <div className='login-signup-container'>
-        <Button type='submit' text='Signup' classes='underline-btn' />
+        <Button type='submit' text='Signup' classes='underline-btn login-signup-btn' />
         <span>or</span>
         <Link to='/login'>
-          <Button text='Login' classes='underline-btn' />
+          <Button text='Login' classes='underline-btn login-signup-btn' />
         </Link>
       </div>
     </form>

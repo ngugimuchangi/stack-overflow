@@ -1,11 +1,34 @@
+import { Outlet, useNavigate } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
 import SideMenu from '../../components/side-menu/side-menu';
 import { Link } from 'react-router-dom';
 import Button from '../../components/button/button';
-import { Outlet } from 'react-router-dom';
+import authService from '../../services/auth-service';
 import './base-layout.css';
 
+/**
+ * BaseLayout component that serves as the main layout for the application.
+ *
+ * It includes a banner, side menu, and main content area. The main content area includes
+ * action buttons for login/logout and asking a new question, and an outlet for rendering
+ * the main content.
+ *
+ * @returns {JSX.Element} The BaseLayout component.
+ */
 export default function BaseLayout() {
+  const navigate = useNavigate();
+  /**
+   * Logs the user out.
+   */
+  async function logout() {
+    try {
+      await authService.logout();
+      navigate('/');
+    } catch (err) {
+      alert('Server responded with an error!');
+    }
+  }
+
   return (
     <div className='base-layout'>
       <Banner />
@@ -13,9 +36,17 @@ export default function BaseLayout() {
         <SideMenu />
         <div className='base-layout-main-content'>
           <div className='base-layout-action-btn-container'>
-            <Link to='/login' className='base-layout-action-btn'>
-              <Button text='Login' classes='clear-btn' />
-            </Link>
+            {authService.isLoggedIn() ? (
+              <Button
+                text='Logout'
+                classes='logout-btn clear-btn base-layout-action-btn'
+                onClick={logout}
+              />
+            ) : (
+              <Link to='/login' className='base-layout-action-btn'>
+                <Button text='Login' classes='clear-btn' />
+              </Link>
+            )}
             <Link to='/new-question' className='base-layout-action-btn'>
               <Button text='Ask Question' classes='action-btn' />
             </Link>

@@ -7,3 +7,8 @@
   display: block;
   font-family: inherit;
 }
+
+.delete-btn:hover {
+  background-color: #f44336;
+  color: white;
+}

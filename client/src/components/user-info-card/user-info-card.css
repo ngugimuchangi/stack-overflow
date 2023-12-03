@@ -1,0 +1,8 @@
+.user-info-item {
+  margin-block: 1rem;
+}
+.user-info-card {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
