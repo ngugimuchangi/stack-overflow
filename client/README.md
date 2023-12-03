@@ -1,8 +1,22 @@
-# React + Vite
+# Client-Side Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the client-side application for our project. It's built with React and communicates with our
+server-side application to provide a dynamic user experience.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To get started with the client-side application, follow these steps:
+
+1. Clone the repository: `git clone <repository-url>`
+2. Navigate to the client directory: `cd client`
+3. Install the dependencies: `npm install`
+4. Start the application: `npm run dev`
+
+The application will start on `http://localhost:3000`.
+
+## Features
+
+- User authentication: Users can sign up, log in, and log out.
+- Question posting: Users can post new questions.
+- Tagging: Users can add tags to their questions.
+- User profiles: Users can view their profile with their details, tags, and questions.
