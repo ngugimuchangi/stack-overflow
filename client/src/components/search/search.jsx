@@ -12,9 +12,9 @@ export default function Search() {
   /**
    * Fetches all questions from the question service and logs them.
    */
-  function getQuestions() {
-    const questions = questionService.getQuestions();
-    console.log(questions);
+  async function getQuestions(event) {
+    event.preventDefault();
+    const question = await questionService.getAllQuestions('q=' + searchTerm);
   }
   return (
     <form className='search-form' onSubmit={getQuestions}>

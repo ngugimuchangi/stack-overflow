@@ -13,7 +13,9 @@ export default function QuestionsPage() {
   const [isAnswering, setIsAnswering] = useState(false);
   const [answers, setAnswers] = useState([]);
 
-  const answerEls = answers.map((answer) => <FeedbackCard key={answer._id} />);
+  const answerEls = answers.map((answer) => (
+    <FeedbackCard key={answer._id} text={'Answered'} info={answer} />
+  ));
 
   useEffect(() => {
     answersService
@@ -37,7 +39,13 @@ export default function QuestionsPage() {
           onClick={() => setIsAnswering((prev) => !prev)}
         />
       )}
-      {isAnswering && <AnswerForm />}
+      {isAnswering && (
+        <AnswerForm
+          questionId={question._id}
+          setAnswers={setAnswers}
+          setIsAnswering={setIsAnswering}
+        />
+      )}
     </>
   );
 }

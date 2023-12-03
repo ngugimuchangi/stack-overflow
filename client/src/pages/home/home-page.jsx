@@ -17,10 +17,7 @@ export default function HomePage() {
     <QuestionsContextProvider questions={questions} setQuestions={setQuestions}>
       <div className='home'>
         <div className='search-ask-question'>
-          <div className='search-res-text'>
-            {' '}
-            {!questions.length ? 'Search Results: 2  questions' : ''}{' '}
-          </div>
+          <div className='search-res-text'> {`Search Results: ${questions.length} question`}</div>
         </div>
         <div className='search-filters-questions'>
           <div className='search-filters'>
