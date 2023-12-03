@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
 import Tag from '../../components/tag/tag';
-import tagsServices from '../../services/tags-services';
 
 import './tags-page.css';
 export default function TagsPage() {
-  const [tags, setTags] = useState(tagsServices.getTags.bind(tagsServices));
-  const tagList = tags.map((tag, index) => <Tag key={index} {...tag} />);
+  const tags = useLoaderData();
+  const tagList = tags.map((tag) => <Tag key={tag._id} tag={tag} />);
 
   return (
     <div>

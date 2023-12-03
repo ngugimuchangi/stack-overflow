@@ -8,6 +8,7 @@ const router = Router({ mergeParams: true });
 router.use('/:questionId/answers', answerRouter);
 
 router.get('', controller.getQuestions);
+router.get('/me', authorize, controller.getQuestionsForCurrentUser);
 router.get('/:questionId', controller.getQuestions);
 router.post('/', authorize, controller.createQuestion);
 router.patch('/:questionId', authorize, controller.updateQuestion);

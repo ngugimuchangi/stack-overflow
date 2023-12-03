@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import './tag.css';
 
-export default function Tag({ id, name, questions }) {
+export default function Tag({ tag }) {
   return (
     <div className='tag-card'>
-      <Link to={`/?t=${id}`}>
-        <h4>{name}</h4>
+      <Link to={`/?t=${tag.name}`}>
+        <h4>{tag.name}</h4>
       </Link>
-      <p>{questions} questions</p>
+      <p>{tag.questionCount} questions</p>
     </div>
   );
 }

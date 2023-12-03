@@ -1,7 +1,7 @@
 import { APIs } from '../common/api';
 import globalService from './global-service';
 import fetchService from './fetch-service';
-
+import authService from './auth-service';
 class UserService {
   /**
    * Signs up a user new user.
@@ -18,6 +18,30 @@ class UserService {
 
     try {
       await fetchService.fetchData(signupURL, method, null, body);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getProfile() {
+    const userURL = globalService.serverUrl + APIs.userAPI + '/me';
+    const method = 'GET';
+    const headers = authService.getAuthHeader();
+
+    try {
+      const user = await fetchService.fetchData(userURL, method, headers);
+      return user;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteUser(id) {
+    const userURL = globalService.serverUrl + APIs.userAPI + '/{id}';
+    const method = 'DELETE';
+    const headers = authService.getAuthHeader();
+    try {
+      await fetchService.fetchData(userURL, method, headers);
     } catch (err) {
       throw err;
     }

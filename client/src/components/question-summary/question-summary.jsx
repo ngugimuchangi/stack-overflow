@@ -1,28 +1,19 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import './question-summary.css';
-import moment from 'moment';
+import globalService from '../../services/global-service';
 
 export default function QuestionSummary({ question }) {
-  const time = moment(question.createdAt);
-  const minutes = moment().diff(time, 'minutes');
-  const hours = moment().diff(time, 'hours');
-  const days = moment().diff(time, 'days');
-  const months = moment().diff(time, 'months');
-  const years = moment().diff(time, 'years');
+  const [time, setTime] = useState(() => globalService.getDisplayTime(question.createdAt));
 
-  const displayTime = () => {
-    if (minutes < 60) {
-      return `${minutes} minutes ago`;
-    } else if (hours < 24) {
-      return `${hours} hours ago`;
-    } else if (days < 30) {
-      return `${days} days ago`;
-    } else if (months < 12) {
-      return `${months} months ago`;
-    } else {
-      return `${years} years ago`;
-    }
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(globalService.getDisplayTime(question.createdAt));
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className='question-summary'>
       <aside className='stats' style={{ color: 'GrayText' }}>
@@ -43,12 +34,12 @@ export default function QuestionSummary({ question }) {
           </div>
           <p className='asker-details'>
             <span style={{ color: 'red', marginRight: '0.5rem' }}>{question.user.username}</span>
-            <span style={{ color: 'GrayText' }}>{`asked ${displayTime()}`}</span>
+            <span style={{ color: 'GrayText' }}>{`asked ${time}`}</span>
           </p>
         </div>
         <div className='tags'>
-          {question.tags.map((tag) => (
-            <div>{tag}</div>
+          {question.tags.map((tag, index) => (
+            <div key={index}>{tag}</div>
           ))}
         </div>
       </div>

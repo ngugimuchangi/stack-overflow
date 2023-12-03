@@ -1,6 +1,12 @@
 import UserInfoCard from '../../components/user-info-card/user-info-card';
 import Button from '../../components/button/button';
 import './profile-page.css';
+import { useLoaderData } from 'react-router-dom';
+import userService from '../../services/user-service';
+import tagsService from '../../services/tags-service';
+import questionsService from '../../services/questions-service';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * ProfilePage component for displaying user details, tags, and questions.
@@ -13,38 +19,25 @@ import './profile-page.css';
  * @returns {JSX.Element} The UserProfile component.
  */
 export default function ProfilePage() {
-  const { user, tags, questions } = {
-    user: {
-      username: 'johndoe',
-      email: 'johndoe@mail.com',
-    },
-    tags: [
-      {
-        name: 'react',
-        id: '123',
-      },
-      {
-        name: 'react',
-        id: '123',
-      },
-    ],
-    questions: [
-      {
-        id: '345',
-        title: 'How to use React?',
-      },
-      {
-        id: '345',
-        title: 'Lorem100 ipsum dolor sit amet consectetur adipisicing elit.',
-      },
-    ],
-  };
+  const navigate = useNavigate();
+  const { user, tags, questions } = useLoaderData();
+  const [userTags, setUserTags] = useState(tags);
+  const [userQuestions, setUserQuestions] = useState(questions);
 
-  function deleteUser() {}
+  async function deleteUser(id) {
+    await userService.deleteUser();
+    navigate('/');
+  }
 
-  function deleteTag(id, index) {}
-  function deleteQuestion(id, index) {}
+  async function deleteTag(id) {
+    await tagsService.deleteTag(id);
+    setUserTags(userTags.filter((tag) => tag._id !== id));
+  }
 
+  async function deleteQuestion(id) {
+    await questionsService.deleteQuestion(id);
+    setUserQuestions(userQuestions.filter((question) => question._id !== id));
+  }
   return (
     <div>
       <h2 className='profile-heading'>User Profile</h2>
@@ -63,13 +56,12 @@ export default function ProfilePage() {
         <div className='section user-tags'>
           <h4>Tags</h4>
           <ul>
-            {tags?.map((tag, index) => (
+            {userTags?.map((tag) => (
               <UserInfoCard
-                key={index}
+                key={tag._id}
                 info={tag.name}
-                id={tag.id}
-                index={index}
-                handleDelete={deleteTag}
+                id={tag._id}
+                handleDelete={async () => await deleteTag(tag._id)}
               />
             ))}
           </ul>
@@ -77,13 +69,12 @@ export default function ProfilePage() {
         <div className='section user-questions'>
           <h4>Questions</h4>
           <ul>
-            {questions?.map((question, index) => (
+            {userQuestions?.map((question, index) => (
               <UserInfoCard
                 key={index}
                 info={question.title}
-                id={question.id}
-                index={index}
-                handleDelete={deleteQuestion}
+                id={question._id}
+                handleDelete={async () => await deleteQuestion(question._id)}
               />
             ))}
           </ul>

@@ -135,7 +135,6 @@ class QuestionController {
     const limit = DOC_LIMIT;
     const skip = page * limit;
     const sort = { createdAt: -1 };
-    const options = { sort, skip, limit };
     const projection = [
       '_id',
       'title',
@@ -365,6 +364,48 @@ class QuestionController {
       };
 
       return res.status(HTTP.OK).json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getQuestionsForCurrentUser(req, res, next) {
+    const { user } = req;
+    const userProjection = ['_id', 'username', 'reputation'];
+
+    const projection = [
+      '_id',
+      'title',
+      'summary',
+      'text',
+      'user',
+      'tags',
+      'createdAt',
+      'updatedAt',
+      'votes',
+      'answers',
+      'views',
+      'active',
+    ];
+    try {
+      const questions = await Question.find({ user: user._id }, projection);
+
+      const questionRes = await Promise.all(
+        questions.map(async (question) => {
+          await question.populate('user');
+          await question.populate('tags');
+
+          const formattedRes = {
+            ...formatDoc(question, projection),
+            tags: question.tags.map((tagDoc) => tagDoc.name),
+            user: formatDoc(question.user, userProjection),
+            answers: question.answers.length,
+          };
+          return formattedRes;
+        })
+      );
+
+      return res.status(HTTP.OK).json(questionRes);
     } catch (err) {
       next(err);
     }

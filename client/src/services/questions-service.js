@@ -21,15 +21,71 @@ class QuestionService {
     }
   }
 
-  async getQuestion(questionId) {}
+  async getQuestion(questionId) {
+    const questionsURL = globalService.serverUrl + APIs.questionsAPI + `/${questionId}`;
+    const method = 'GET';
+    const headers = authService.getAuthHeader();
 
-  async createQuestion(question) {}
+    try {
+      const questions = await fetchService.fetchData(questionsURL, method, headers);
+      return questions;
+    } catch (err) {
+      throw err;
+    }
+  }
 
-  async updateQuestion(questionId) {}
+  async getCurrentUserQuestions() {
+    const questionsURL = globalService.serverUrl + APIs.questionsAPI + '/me';
+    const method = 'GET';
+    const headers = authService.getAuthHeader();
 
-  async deleteQuestion(questionId) {}
+    try {
+      const questions = await fetchService.fetchData(questionsURL, method, headers);
+      return questions;
+    } catch (err) {
+      throw err;
+    }
+  }
 
-  async voteOnQuestion(questionId, action) {}
+  async createQuestion(question) {
+    const questionsURL = globalService.serverUrl + APIs.questionsAPI;
+    const method = 'POST';
+    const headers = authService.getAuthHeader();
+    const body = JSON.stringify(question);
+
+    try {
+      const questions = await fetchService.fetchData(questionsURL, method, headers, body);
+      return questions;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateQuestion(questionId, body) {
+    const questionsURL = globalService.serverUrl + APIs.questionsAPI + `/${questionId}`;
+    const method = 'PATCH';
+    const headers = authService.getAuthHeader();
+    const reqBody = JSON.stringify(body);
+
+    try {
+      const question = await fetchService.fetchData(questionsURL, method, headers, reqBody);
+      return question;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteQuestion(questionId) {
+    const questionsURL = globalService.serverUrl + APIs.questionsAPI + `/${questionId}`;
+    const method = 'DELETE';
+    const headers = authService.getAuthHeader();
+
+    try {
+      await fetchService.fetchData(questionsURL, method, headers);
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 export default new QuestionService();

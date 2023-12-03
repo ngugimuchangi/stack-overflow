@@ -10,8 +10,12 @@ import UnauthorizedPage from '../pages/unauthorized/unauthorized-page';
 import TagsPage from '../pages/tags/tags-page';
 import AuthLayout from '../layouts/auth-layout/auth-layout';
 import ProfilePage from '../pages/profile/profile-page';
+import { redirect } from 'react-router-dom';
 
 import questionsService from '../services/questions-service';
+import tagsService from '../services/tags-service';
+import authService from '../services/auth-service';
+import userService from '../services/user-service';
 
 const router = createBrowserRouter([
   {
@@ -26,18 +30,32 @@ const router = createBrowserRouter([
       {
         path: 'new-question',
         element: <NewQuestionPage />,
+        loader: () => !authService.isLoggedIn() && redirect('/unauthorized'),
       },
       {
         path: 'questions/:questionId',
         element: <QuestionPage />,
+        loader: ({ params }) => questionsService.getQuestion(params.questionId),
       },
       {
         path: 'tags',
         element: <TagsPage />,
+        loader: tagsService.getTags,
       },
       {
         path: 'profile',
         element: <ProfilePage />,
+        loader: async () => {
+          if (!authService.isLoggedIn()) return redirect('/unauthorized');
+          try {
+            const user = await userService.getProfile();
+            const questions = await questionsService.getCurrentUserQuestions();
+            const tags = await tagsService.getTUsersTags();
+            return { user, questions, tags };
+          } catch (err) {
+            console.log(err);
+          }
+        },
       },
     ],
   },
