@@ -1,0 +1,17 @@
+.header-content {
+  background-color: #ccc;
+  padding: 1rem 0.5rem;
+  display: flex;
+  border-bottom: 1px solid #000;
+}
+
+.header-text {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-inline: auto;
+  color: #000;
+}
+
+.header-text:hover {
+  color: #000;
+}

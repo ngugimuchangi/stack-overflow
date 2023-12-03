@@ -1,0 +1,31 @@
+.answer-form {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  width: 100%;
+}
+.answer-input {
+  font-family: inherit;
+  width: 100%;
+  height: 10rem;
+  color: black;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  margin-block: 1rem;
+}
+
+.answer-input:focus {
+  outline: 1px solid #000;
+  font-size: 1rem;
+}
+
+.answer-form-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.warning {
+  color: red;
+  font-size: 0.9rem;
+}

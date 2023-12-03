@@ -1,0 +1,22 @@
+.feedback-container {
+  display: flex;
+  margin-block: 2rem;
+  padding-block: 1rem;
+  border-bottom: 1px dotted #000;
+}
+
+.feedback-text {
+  margin-right: auto;
+  width: 60%;
+}
+
+.user-details {
+  align-self: flex-end;
+}
+.user-name {
+  color: green;
+}
+
+.feedback-date {
+  color: gray;
+}

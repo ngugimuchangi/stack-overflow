@@ -1,0 +1,32 @@
+.base-layout-content {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+}
+.base-layout-content {
+  width: 90%;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+.base-layout-content .base-layout-main-content {
+  flex: 1;
+  padding: 2rem 1rem;
+}
+
+.base-layout-action-btn-container {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+.base-layout-action-btn:first-of-type {
+  margin-left: auto;
+}
+
+.login-btn {
+  border: 1px solid transparent;
+}
+
+.login-btn:hover {
+  cursor: pointer;
+  border-color: #000;
+}

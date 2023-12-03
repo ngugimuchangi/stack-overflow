@@ -1,0 +1,20 @@
+.side-menu {
+  padding-block: 1rem;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  border-right: dotted 1px #000;
+  min-height: 100vh;
+}
+
+.menu-item {
+  padding: 0.25rem 2rem;
+  border-radius: 0.25rem;
+  margin-block: 0.5rem;
+  color: gray;
+}
+
+.menu-item.active {
+  color: #5b8ac6;
+}

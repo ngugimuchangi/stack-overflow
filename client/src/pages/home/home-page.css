@@ -1,0 +1,20 @@
+.search-ask-question {
+  display: flex;
+  justify-content: space-between;
+  margin-block: 0.5rem;
+}
+
+.search-filters-questions {
+  display: flex;
+  margin-block: 0.5rem;
+}
+
+.search-filters {
+  margin-left: auto;
+  display: flex;
+  gap: 0;
+}
+
+.search-res-text {
+  margin-block: 0.5rem;
+}

@@ -1,0 +1,42 @@
+.question-view {
+  border-bottom: 1px dotted #000;
+}
+
+.answer-count-title-ask-question,
+.question-details {
+  display: flex;
+  margin-block: 2rem;
+}
+
+.question-title,
+.question-text {
+  margin-inline: auto;
+  width: 60%;
+}
+
+.views,
+.answer-count,
+.question-title {
+  font-weight: 600;
+}
+
+.question-title {
+  text-align: center;
+  font-size: 1.25rem;
+}
+
+.answer-question-btn {
+  margin-block: 2rem;
+}
+
+.question-user-name {
+  color: red;
+}
+
+.question-time {
+  color: gray;
+}
+
+.question-asked-by {
+  align-self: flex-end;
+}

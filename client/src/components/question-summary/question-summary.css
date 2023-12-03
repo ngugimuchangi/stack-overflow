@@ -1,0 +1,32 @@
+.question-summary {
+  display: grid;
+  grid-template-columns: 0.25fr 0.75fr;
+  border-block: 1px dotted #000;
+  padding: 1rem;
+}
+
+.question-summary:first-child {
+  border-top: 0;
+}
+
+.question-summary:last-child {
+  border-bottom: 0;
+}
+
+.question-summary .text {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tags > * {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}

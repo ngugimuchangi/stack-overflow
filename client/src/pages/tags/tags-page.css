@@ -1,0 +1,14 @@
+.tag-details {
+  display: flex;
+  margin-block: 1rem;
+}
+
+.tag-details :last-child {
+  margin-inline: auto;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}

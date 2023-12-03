@@ -1,0 +1,27 @@
+.question-form {
+  width: 90%;
+  margin: auto;
+}
+
+.question-form :where(input, textarea, label, button) {
+  margin-bottom: 1rem;
+}
+
+.question-form :where(input, textarea) {
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+}
+
+.question-form :where(input, textarea):focus {
+  outline: 1px solid #ccc;
+}
+
+.text-area {
+  display: block;
+  height: 20rem;
+  background-color: #fff;
+}
+
+.question-form .btn {
+  margin-top: 1rem;
+}

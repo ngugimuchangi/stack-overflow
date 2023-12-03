@@ -1,0 +1,80 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+}
+
+.app {
+  background-color: #fff;
+  position: relative;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  padding: 2rem;
+}
+
+input {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: black;
+  padding: 0.5rem;
+  border-radius: 0;
+  outline: none;
+}
+
+input:focus {
+  outline: 1px solid #ccc;
+}
+
+label,
+input {
+  display: block;
+  width: 100%;
+}
+
+.action-btn {
+  background-color: #6ca0dc;
+  color: white;
+  border: none;
+}
+
+.action-btn:hover {
+  background-color: #5b8ac6;
+}
+
+.clear-btn {
+  border: 1px solid transparent;
+}
+
+.clear-btn:hover {
+  border-color: #000;
+}
+
+.underline-btn {
+  border: none;
+}
+
+.underline-btn:hover {
+  text-decoration: dotted underline;
+}
