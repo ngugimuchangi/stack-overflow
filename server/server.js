@@ -10,7 +10,7 @@ const routerNotFound = require('./middlewares/404');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+const CLIENT_URL = process.env.CLIENT_URL || '*';
 let server;
 
 // Middleware setup

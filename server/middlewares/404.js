@@ -8,7 +8,6 @@ const { HTTP } = require('../common/constants');
  * @param {Response} res Response object
  */
 function routerNotFound(req, res) {
-  console.log('Passed here', req.method);
   if (req.method.toUpperCase === 'OPTIONS') return res.end();
   else return res.status(HTTP.NOT_FOUND).json({ error: 'Route not found' });
 }

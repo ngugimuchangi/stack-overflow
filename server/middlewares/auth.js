@@ -18,10 +18,11 @@ passport.use(jwtStrategy);
  * @param {Function} done - callback function
  */
 async function verify(payload, done) {
-  const { id, expire } = payload;
+  const { id } = payload;
+  const exp = new Date(payload.exp).getTime();
   const now = Date.now();
 
-  if (now >= expire) return done(null, false);
+  if (now >= exp) return done(null, false);
 
   try {
     const user = await User.findById(id);
