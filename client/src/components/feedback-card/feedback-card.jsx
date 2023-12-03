@@ -1,16 +1,15 @@
 import './feedback-card.css';
-export default function FeedbackCard({ classes }) {
+import globalService from '../../services/global-service';
+
+export default function FeedbackCard({ text, info }) {
+  const feedbackTime = globalService.getDisplayTime(info.createdAt);
   return (
     <>
       <div className='feedback-container'>
-        <div className='feedback-text'>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent
-          libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum
-          imperdiet. Duis sagittis ipsum. Aenean commodo ligula eget dolor.
-        </div>
+        <div className='feedback-text'>{info.text}</div>
         <div className='user-details'>
-          <div className='user-name'>Joji John</div>
-          <div className='feedback-date'>asked 20 hours ago</div>
+          <div className='user-name'>{info.user.username}</div>
+          <div className='feedback-date'>{`${text} ${feedbackTime}`}</div>
         </div>
       </div>
     </>
