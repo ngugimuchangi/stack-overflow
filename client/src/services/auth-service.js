@@ -88,13 +88,10 @@ class AuthService {
    * Clears the user's token.
    */
   clearToken() {
-    console.log('Token not cleared');
-
     this.#token = null;
     this.#currentUser = null;
     localStorage.removeItem('token');
     localStorage.removeItem('exp');
-    console.log('Token cleared');
   }
 
   /**

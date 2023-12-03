@@ -6,7 +6,7 @@ export default function UserInfoCard({ info, id, handleDelete }) {
       <div className='user-info-card'>
         <p> {info} </p>
         <div className='button-container'>
-          <Button text='Delete' classes='delete-btn' />
+          <Button text='Delete' classes='delete-btn' onClick={handleDelete} />
         </div>
       </div>
     </li>
