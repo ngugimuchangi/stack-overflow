@@ -9,8 +9,7 @@ router.use('/:answerId/comments', commentsRouter);
 
 router.get('/', controller.getAnswers);
 router.post('/', verify, controller.createAnswer);
-router.put('/:answerId', verify, controller.updateAnswer);
-router.patch('/:answerId/vote', verify, controller.voteAnswer);
-router.delete('/:id', verify, controller.deleteAnswer);
+router.patch('/:answerId', verify, controller.updateAnswer);
+router.delete('/:answerId', verify, controller.deleteAnswer);
 
 module.exports = router;

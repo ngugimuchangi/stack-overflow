@@ -1,12 +1,12 @@
 const { Router } = require('express');
 const controller = require('../controllers/comments');
+const authorize = require('../middlewares/auth');
 
 const router = Router({ mergeParams: true });
 
-router.post('/', controller.createComment);
+router.post('/', authorize, controller.createComment);
 router.get('/', controller.getComments);
-router.patch('/:commentId', controller.updateComment);
-router.patch('/:commentId/vote', controller.voteComment);
-router.delete('/:commentId', controller.deleteComment);
+router.patch('/:commentId', authorize, controller.updateComment);
+router.delete('/:commentId', authorize, controller.deleteComment);
 
 module.exports = router;

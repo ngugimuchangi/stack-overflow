@@ -7,7 +7,7 @@ const router = Router();
 
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
-router.use('questions', questionsRouter);
+router.use('/questions', questionsRouter);
 router.use('/tags', tagsRouter);
 
 module.exports = router;

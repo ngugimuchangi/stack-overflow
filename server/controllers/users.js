@@ -9,17 +9,37 @@ class UserController {
   /**
    * Get users list or user by id
    *
+   *
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   *
    * @example
    * Sample request: GET /users
    * Sample request: GET /users?page=0
    * Sample request: GET /users?page=1
    * Sample request: GET /users/1234567890
    *
-   * @param {Request} req Request object
-   * @param {Response} res Response object
-   * @param {Next} next Next function
+   * Sample response:
+   * [
+   *  {
+   *    "_id": "1234567890",
+   *    "email": "email@mail.com"
+   *    "username": "user1",
+   *    "reputation": 0,
+   *    "status": "General"
+   *  },
+   *  {
+   *    "_id": "1234567891",
+   *    "email": "mail2@mail.com"
+   *    "username": "user2",
+   *    "reputation": 0,
+   *    "status": "General"
+   *  }
+   * ]
+   *
    */
-  async getUser(req, res, next) {
+  async getUsers(req, res, next) {
     const id = req.params.userId;
     const { user } = req;
     const limit = DOC_LIMIT;
@@ -28,10 +48,9 @@ class UserController {
     const projection = ['email', 'username', 'reputation', 'status'];
     const pipeline = { skip, limit };
 
+    if (!user.isAdmin()) return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
     try {
-      const currentUser = await User.findById(user.id);
-
-      if (id && (currentUser.isAdmin() || user.id === id)) {
+      if (id) {
         const user = await User.findById(id, projection);
         if (!user) return res.status(HTTP.NOT_FOUND).json({ message: 'User not found' });
 
@@ -45,6 +64,37 @@ class UserController {
     }
   }
 
+  /**
+   * Get users list or user by id
+   *
+   *
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   *
+   * @example
+   * Sample request: GET /users/me
+   * Sample response:
+   *  {
+   *    "_id": "1234567890",
+   *    "email": "email@mail.com"
+   *    "username": "user1",
+   *    "reputation": 0,
+   *    "status": "General"
+   *  }
+   */
+  getCurrentUser(req, res, _next) {
+    const { user } = req;
+    const resProps = ['_id', 'email', 'username', 'reputation', 'status'];
+
+    res.status(HTTP.OK).json(formatDoc(user, resProps));
+    /**
+     * Create new user
+     * @param {Request} req Request object
+     * @param {Response} res Response object
+     * @param {Next} next Next function
+     */
+  }
   /**
    * Create new user
    * @param {Request} req Request object
@@ -61,6 +111,7 @@ class UserController {
    * }
    * Sample response:
    * {
+   * "_id": "1234567890",
    * "email": "user1@mail.com",
    * "username": "user1",
    * "reputation": 0,
@@ -68,7 +119,7 @@ class UserController {
    * }
    */
   async createUser(req, res, next) {
-    const resProps = ['email', 'username', 'reputation', 'status'];
+    const resProps = ['_id', 'email', 'username', 'reputation', 'status'];
     const { email, username, password, status } = req.body;
     const statuses = ['General', 'Admin'];
 
@@ -77,7 +128,10 @@ class UserController {
 
     try {
       const existingUser = await User.findOne({ email });
-      if (existingUser) return res.status(HTTP.CONFLICT).json({ message: 'User exists' });
+      if (existingUser)
+        return res
+          .status(HTTP.CONFLICT)
+          .json({ message: 'Account with given email address already exists' });
 
       const user = new User({ email, username, password });
       if (statuses.includes(status)) user.status = status;
@@ -108,68 +162,14 @@ class UserController {
     const { user } = req;
 
     try {
-      const currentUser = await User.findById(user.id);
-      if (!currentUser || (!user.id !== id && !currentUser.isAdmin()))
-        return res
-          .status(HTTP.UNAUTHORIZED)
-          .json({ message: 'You are not authorized to delete this user' });
+      if (!user.isAdmin() && user._id.toString() !== id)
+        return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
 
-      const userToDelete = await User.deleteOne({ _id: id });
-      if (!userToDelete) return res.status(HTTP.NOT_FOUND).json({ message: 'User not found' });
+      const userToDelete = await User.deleteOne({ _id: user._id });
+
       res.status(HTTP.NO_CONTENT).end();
     } catch (err) {
       next(err);
-    }
-  }
-
-  /**
-   * Get user tags along with the count of questions for each tag.
-   *
-   * @param {Request} req Request object
-   * @param {Response} res Response object
-   * @param {Next} next Next function
-   *
-   * @example
-   * Sample request: GET /users/1234567890/tags
-   * Sample response:
-   * [
-   *  {
-   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
-   *    "name": "tag1",
-   *    "questionCount": 10
-   *  },
-   *  {
-   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3f",
-   *    "name": "tag2",
-   *    "questionCount": 5
-   *  }
-   * ]
-   *
-   */
-  async getUserTags(req, res, next) {
-    const { userId } = req.params;
-    try {
-      const tags = await Tag.aggregate([
-        { $match: { createdBy: userId } },
-        {
-          $lookup: {
-            from: 'questions',
-            localField: '_id',
-            foreignField: 'tags',
-            as: 'questions',
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            name: 1,
-            questionCount: { $size: '$questions' },
-          },
-        },
-      ]);
-      res.status(200).json(tags);
-    } catch (error) {
-      next(error);
     }
   }
 }

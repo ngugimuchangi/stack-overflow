@@ -17,17 +17,76 @@ The server will start on `http://localhost:8000`.
 
 ## API Endpoints
 
-- `/auth/login`: Endpoint for user login.
+### Authentication
+
+- `POST /auth/login`: Endpoint for user login
+  - Request body:
+    - `email`: string,
+    - `password`: string
 - `auth/logout`: Endpoint for user logout.
-- `/users`: Endpoints for user registration and authentication.
-- `/users/:userId`: Endpoints for user registration and authentication.
-- `/questions`: Endpoints for creating and reading questions.
-- `/questions:questionId`: Endpoints for creating, reading and deleting questions.
-- `questions/:questionId/answers`: Endpoints for creating and reading.
-- `questions/:questionId/answers/:answerId`: Endpoints for reading, updating, and deleting answers.
-- `/questions/:questionId/answers/:answerId/vote`: Endpoints for upvoting and downvoting answers
-- `/questions/:questionId/answers/:answerId/comments`: Endpoints for creating and reading comments.
-- `/questions/:questionId/answers/:answerId/comments/:commentId`: Endpoints for editing, reading and
-  deleting comments.
-- `/questions/:id/answers/:id/comments/vote`: Endpoints for upvoting and downvoting comments.
-- `/tags`: Endpoints for creating, reading, updating, and deleting tags.
+
+### Users
+
+- `GET /users`: Get all users. Only available to admins.
+- `GET /users/:userId`: Get user by id. Available to admins.
+- `GET /users/me`: Get current user.
+- `DELETE /users/:userId`: Delete user by id. Only available to admins and user who is deleting
+  their own account.
+
+### Questions
+
+- `POST /questions`: Create a new question.
+  - Request body: `{ title: string, body: string, tags: string[] }`
+- `GET /questions`: Get all questions. Available to all users.
+  - Query parameters:
+    - `p`: Page number
+    - `t`: Filter by tag names - comma separated list of tag names e.g. `t=tag1,tag2,tag3`
+    - `q`: Search query.
+    - `s`: Active, inactive answered questions. `s=active` or `s=inactive`, `answered`
+- `GET /questions:questionId`: Get question by id. Available to all users.
+- `PATCH /questions/:questionId`: Edit question by id. Available to admins and question owner.
+
+  - Request body:
+    - `title`: string
+    - `summary`: string
+    - `text`: string
+    - `action`: string (either `update`, `upvote`, `downvote`, `view`, `activate`, or `deactivate` )
+
+- `DELETE /questions/:questionId`: Delete question by id. Available to admins and question owner.
+
+### Answers
+
+- `POST /questions/:questionId/answers`: Create a new answer.
+  - Request body: `{ body: string }`
+- `GET /:questionId/answers`: Get all answers for a question. Available to all users.
+  - Query parameters:
+    - `p`: Page number
+- `GET/:questionId/answers/:answerId`: Get answer by id. Available to all users.
+- `PATCH /questions/:questionId/answers/:answerId`: Edit answer by id. Available to admins and
+  answer owner.
+  - Request body:
+    - `text`: string
+    - `action`: string (either `update` or `upvote` or `downvote`)
+- `DELETE /questions/:questionId/answers/:answerId`: Delete answer by id. Available to answer owner.
+
+### Comments
+
+- `GET /questions/:questionId/answers/:answerId/comments`: Get all comments for an answer.
+  - Query parameters:
+    - `p`: Page number
+- `POST /questions/:questionId/answers/:answerId/comments`: Create a new comment.
+  - Request body:
+    - `text1: string
+- `/PATCH questions/:questionId/answers/:answerId/comments/:commentId`: Edit comment by id.
+  Available to comment owner.
+  - Request body:
+    - `text`: string
+    - `action`: string (either `update` or `upvote` or `downvote`)
+- `DELETE /questions/:questionId/answers/:answerId/comments/:commentId`: Delete comment by id.
+  Available to admins and comment owner.
+
+### Tags
+
+- `GET /tags`: Get all tags
+- `GET /tags/me`: Get all tags for the current user
+- `DELETE /tags/:id`: Delete a tag

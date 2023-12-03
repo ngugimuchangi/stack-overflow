@@ -1,7 +1,9 @@
 require('../common/types');
 
 const Question = require('../models/questions');
+const User = require('../models/users');
 const formatDoc = require('../utils/format-res');
+const isSameId = require('../utils/compare-ids');
 const { HTTP, MIN_REPS, UPVOTE_REPS, DOWNVOTE_REPS } = require('../common/constants');
 
 class CommentsController {
@@ -35,12 +37,13 @@ class CommentsController {
    *
    */
   async createComment(req, res, next) {
-    const { questionId, answerId, text } = req.body;
+    const { questionId, answerId } = req.params;
+    const { text } = req.body;
     const { user } = req;
     const commentProjection = ['_id', 'text', 'votes', 'createdAt', 'updatedAt'];
+
     const userProjection = ['_id', 'username', 'reputation'];
-    if (!questionId || !answerId || !text)
-      return res.status(HTTP.BAD_REQUEST).json({ message: 'Missing required fields' });
+    if (!text) return res.status(HTTP.BAD_REQUEST).json({ message: 'Missing required fields' });
 
     try {
       const question = await Question.findById(questionId);
@@ -54,13 +57,15 @@ class CommentsController {
         return res.status(HTTP.NOT_FOUND).json({ message: 'Answer not found' });
       }
 
-      const comment = new Comments({ text, user: user._id });
+      const comment = { text, user: user._id };
       answer.comments.push(comment);
 
       await question.save();
 
+      const createdComment = answer.comments[answer.comments.length - 1];
+
       res.status(HTTP.CREATED).json({
-        ...formatDoc(comment, commentProjection),
+        ...formatDoc(createdComment, commentProjection),
         user: formatDoc(user, userProjection),
       });
     } catch (err) {
@@ -74,7 +79,7 @@ class CommentsController {
    * @param {Response} res Response object
    * @param {Next} next Next function
    * @example
-   * Sample request: GET /questions/1234567890/answers/1234567890/comments?page=2
+   * Sample request: GET /questions/1234567890/answers/1234567890/comments?p=2
    * Sample response:
    * [
    *  {
@@ -93,31 +98,31 @@ class CommentsController {
    */
   async getComments(req, res, next) {
     const { questionId, answerId } = req.params;
-    const page = parseInt(req.query.page, 10) || 0;
+    const page = parseInt(req.query.p, 10) || 0;
     const limit = 3;
     const skip = page * limit;
-    const commentProjection = ['text', 'user', 'votes', 'createdAt', 'updatedAt'];
+    const commentProjection = ['_id', 'text', 'user', 'votes', 'createdAt', 'updatedAt'];
 
     const userProjection = ['_id', 'username', 'reputation'];
 
     try {
-      const question = Question.findById(questionId);
+      const question = await Question.findById(questionId);
       if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Question not found' });
 
       const answer = question.answers.id(answerId);
       if (!answer) return res.status(HTTP.NOT_FOUND).json({ message: 'Answer not found' });
 
       let comments = await answer.comments.toObject();
-      comments = comments.sort((a, b) => a.createdAt - b.createdAt);
+      comments = comments.sort((a, b) => b.createdAt - a.createdAt);
       comments = comments.slice(skip, skip + limit);
 
       const answerRes = [];
 
       for (const comment of comments) {
-        await comment.populate('user');
+        const user = await User.findById(comment.user);
         answerRes.push({
           ...formatDoc(comment, commentProjection),
-          user: formatDoc(comment.user, userProjection),
+          user: formatDoc(user, userProjection),
         });
       }
       res.status(HTTP.OK).json(answerRes);
@@ -156,21 +161,52 @@ class CommentsController {
    */
   async updateComment(req, res, next) {
     const { questionId, answerId, commentId } = req.params;
-    const { text } = req.body;
+    const { text, action } = req.body;
+    const { user } = req;
     const responseProjection = ['_id', 'text', 'votes', 'createdAt', 'updatedAt'];
     const userProjection = ['_id', 'username', 'reputation'];
 
     try {
       const question = await Question.findById(questionId);
-      const answer = question.answers.id(answerId);
-      const comment = answer.comments.id(commentId);
+      if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Comment not found' });
 
-      comment.text = text;
+      const answer = question.answers.id(answerId);
+      if (!answer) return res.status(HTTP.NOT_FOUND).json({ message: 'Comment not found' });
+
+      const comment = answer.comments.id(commentId);
+      if (!comment) return res.status(HTTP.NOT_FOUND).json({ message: 'Comment not found' });
+
+      const commentBy = await User.findById(comment.user);
+
+      if (action === 'update') {
+        if (!text) return res.status(HTTP.BAD_REQUEST).json({ message: 'Missing required fields' });
+        else if (!isSameId(commentBy._id, user._id))
+          return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
+        else comment.text = text;
+      } else if (action === 'upvote') {
+        if (commentBy.reputation < MIN_REPS)
+          return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
+        else {
+          comment.votes += 1;
+          commentBy.reputation += UPVOTE_REPS;
+        }
+      } else if (action === 'downvote') {
+        if (commentBy.reputation < MIN_REPS)
+          return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
+        else {
+          comment.votes -= 1;
+          commentBy.reputation -= DOWNVOTE_REPS;
+        }
+      } else {
+        return res.status(HTTP.BAD_REQUEST).json({ message: 'Invalid action' });
+      }
 
       await question.save();
+      await commentBy.save();
+
       const response = {
         ...formatDoc(comment, responseProjection),
-        user: formatDoc(comment.user, userProjection),
+        user: formatDoc(commentBy, userProjection),
       };
 
       res.status(HTTP.OK).json(response);
@@ -195,89 +231,28 @@ class CommentsController {
    */
   async deleteComment(req, res, next) {
     const { questionId, answerId, commentId } = req.params;
-
-    try {
-      const question = await Question.findById(questionId);
-      const answer = question.answers.id(answerId);
-
-      answer.comments.id(commentId).remove();
-
-      await question.save();
-
-      res.status(HTTP.NO_CONTENT);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  /**
-   * Vote on a comment.
-   *
-   * This method allows a user to upvote or downvote a comment. The action is specified in the request body.
-   * The votes count of the comment and the reputation of the user who added the comment are updated accordingly.
-   *
-   * @param {Request} req - Request object
-   * @param {Response} res - Response object
-   * @param {Next} next - Next function
-   *
-   * @example
-   * Sample request: POST /questions/:questionId/answers/:answerId/comments/:commentId/vote
-   *
-   * Sample request body:
-   * { "action": "upvote" }
-   *
-   * Sample response:
-   * {
-   *   "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
-   *   "text": "Comment text",
-   *   "votes": 1,
-   *   "user": {
-   *     "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
-   *     "username": "user1",
-   *     "reputation": 5
-   *   }
-   *  "createdAt": "2020-01-03T06:10:18.610Z",
-   *  "updatedAt": "2020-01-03T06:10:18.610Z",
-   * }
-   *
-   */
-  async voteComment(req, res, next) {
-    const { questionId, answerId, commentId } = req.params;
-    const { action } = req.body;
     const { user } = req;
-    const responseProjection = ['_id', 'text', 'votes', 'createdAt', 'updatedAt'];
-    const userProjection = ['_id', 'username', 'reputation'];
-
-    if (user.reputation < MIN_REPS)
-      return res
-        .status(HTTP.UNAUTHORIZED)
-        .json({ message: `Needs a minimum of ${MIN_REPS} reputation points to vote` });
 
     try {
       const question = await Question.findById(questionId);
-      const answer = question.answers.id(answerId);
-      const comment = answer.comments.id(commentId);
-      await comment.populate('user');
 
-      if (action === 'upvote') {
-        comment.votes += 1;
-        comment.user.reputation += UPVOTE_REPS;
-      } else if (action === 'downvote') {
-        comment.votes -= 1;
-        comment.user.reputation -= DOWNVOTE_REPS;
-      } else {
-        return res.status(400).json({ message: 'Invalid action' });
-      }
+      if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Comment not found' });
+      const answer = question.answers.id(answerId);
+
+      if (!answer) return res.status(HTTP.NOT_FOUND).json({ message: 'Comment not found' });
+
+      const comment = answer.comments.id(commentId);
+
+      if (!comment) return res.status(HTTP.NOT_FOUND).json({ message: 'Comment not found' });
+
+      if (!isSameId(comment.user, user._id))
+        return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
+
+      answer.comments.pull(commentId);
 
       await question.save();
-      await comment.user.save();
 
-      const response = {
-        ...formatDoc(comment, responseProjection),
-        user: formatDoc(comment.user, userProjection),
-      };
-
-      res.status(HTTP.OK).json(response);
+      res.status(HTTP.NO_CONTENT).end();
     } catch (error) {
       next(error);
     }

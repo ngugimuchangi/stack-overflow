@@ -12,7 +12,7 @@ const constants = {
   DOC_LIMIT: parseInt(process.env.DOC_LIMIT, 10) || 5,
   MIN_REPS: parseInt(process.env.MIN_REPS, 10) || 50,
   UPVOTE_REPS: parseInt(process.env.MIN_REPS, 10) || 5,
-  DOWNVOTE_REPS: parseInt(process.env.MIN_REPS, 10) || -10,
+  DOWNVOTE_REPS: parseInt(process.env.MIN_REPS, 10) || 10,
 };
 
 module.exports = constants;
