@@ -44,7 +44,9 @@ const router = createBrowserRouter([
         element: <QuestionPage />,
         loader: async ({ params }) => {
           try {
-            const question = await questionsService.getQuestion(params.questionId);
+            const question = await questionsService.updateQuestion(params.questionId, {
+              action: 'view',
+            });
             return question;
           } catch (err) {
             return [];

@@ -58,9 +58,14 @@ class QuestionController {
       'title',
       'summary',
       'text',
+      'user',
       'tags',
       'createdAt',
       'updatedAt',
+      'votes',
+      'answers',
+      'views',
+      'active',
     ];
 
     if (!title || !summary || !text || !tags)
@@ -94,6 +99,7 @@ class QuestionController {
         ...formatDoc(question, questionProjection),
         tags: tagDocs.map((tagDoc) => tagDoc?.name),
         user: formatDoc(user, userProjection),
+        answers: question.answers.length,
       };
       res.status(HTTP.CREATED).json(questionRes);
     } catch (error) {
@@ -306,9 +312,11 @@ class QuestionController {
       'title',
       'summary',
       'text',
+      'user',
       'tags',
-      'views',
       'votes',
+      'answers',
+      'views',
       'active',
       'createdAt',
       'updatedAt',
@@ -361,6 +369,7 @@ class QuestionController {
       const response = {
         ...formatDoc(question, projection),
         user: formatDoc(askedBy, userProjection),
+        answers: question.answers.length,
       };
 
       return res.status(HTTP.OK).json(response);

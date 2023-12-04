@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import questionService from '../../services/questions-service';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Search component for searching all questions.
@@ -7,17 +7,18 @@ import questionService from '../../services/questions-service';
  * @returns {JSX.Element} The Search component.
  */
 export default function Search() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
   /**
    * Fetches all questions from the question service and logs them.
    */
-  async function getQuestions(event) {
+  function search(event) {
     event.preventDefault();
-    const question = await questionService.getAllQuestions('q=' + searchTerm);
+    navigate(`/?t=${searchTerm}`);
   }
   return (
-    <form className='search-form' onSubmit={getQuestions}>
+    <form className='search-form' onSubmit={search}>
       <input
         type='search'
         placeholder='Search...'

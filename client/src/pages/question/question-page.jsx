@@ -10,6 +10,8 @@ import answersService from '../../services/answers-service';
 
 export default function QuestionsPage() {
   const question = useLoaderData();
+  const [questionState, setQuestionState] = useState(question);
+
   const [isAnswering, setIsAnswering] = useState(false);
   const [answers, setAnswers] = useState([]);
 
@@ -30,7 +32,7 @@ export default function QuestionsPage() {
 
   return (
     <>
-      <Question question={question} />
+      <Question question={questionState} />
       {answerEls}
       {authService.isLoggedIn() && (
         <Button
@@ -44,6 +46,7 @@ export default function QuestionsPage() {
           questionId={question._id}
           setAnswers={setAnswers}
           setIsAnswering={setIsAnswering}
+          updateQuestion={setQuestionState}
         />
       )}
     </>

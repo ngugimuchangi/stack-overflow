@@ -1,5 +1,6 @@
 import Button from '../../button/button';
 import answerService from '../../../services/answers-service';
+import questionsService from '../../../services/questions-service';
 import './answer-form.css';
 import { useState } from 'react';
 
@@ -8,7 +9,7 @@ import { useState } from 'react';
  *
  * @returns {JSX.Element} The AnswerForm component.
  */
-export default function AnswerForm({ questionId, setIsAnswering, setAnswers }) {
+export default function AnswerForm({ questionId, setIsAnswering, setAnswers, updateQuestion }) {
   const [answer, setAnswer] = useState('');
   /**
    * Handles the form submission event.
@@ -20,6 +21,7 @@ export default function AnswerForm({ questionId, setIsAnswering, setAnswers }) {
     await answerService.createAnswer(questionId, { text: answer });
     setAnswers(await answerService.getAnswers(questionId));
     setIsAnswering(false);
+    updateQuestion(await questionsService.getQuestion(questionId));
   };
 
   return (
