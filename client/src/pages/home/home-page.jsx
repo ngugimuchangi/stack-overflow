@@ -8,6 +8,7 @@ import questionsService from '../../services/questions-service';
 import './home-page.css';
 
 export default function HomePage() {
+  const MAX_QUESTIONS_PER_PAGE = 5;
   const data = useLoaderData();
   const [questions, setQuestions] = useState(data);
   const [activeSearch, setActiveSearch] = useState('all');
@@ -64,7 +65,10 @@ export default function HomePage() {
           />
           <Button
             text='next'
-            classes={'nav-btn action-btn' + (questions.length === 0 ? ' btn-disabled' : '')}
+            classes={
+              'nav-btn action-btn' +
+              (questions.length < MAX_QUESTIONS_PER_PAGE ? ' btn-disabled' : '')
+            }
             onClick={async () => {
               const query =
                 `p=${activePage + 1}` + (activeSearch === 'all' ? '' : `&s=${activeSearch}`);

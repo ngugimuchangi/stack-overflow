@@ -25,7 +25,14 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <HomePage />,
-        loader: questionsService.getAllQuestions,
+        loader: async () => {
+          try {
+            const questions = await questionsService.getAllQuestions();
+            return questions;
+          } catch (err) {
+            return [];
+          }
+        },
       },
       {
         path: 'new-question',
@@ -35,12 +42,26 @@ const router = createBrowserRouter([
       {
         path: 'questions/:questionId',
         element: <QuestionPage />,
-        loader: ({ params }) => questionsService.getQuestion(params.questionId),
+        loader: async ({ params }) => {
+          try {
+            const question = await questionsService.getQuestion(params.questionId);
+            return question;
+          } catch (err) {
+            return [];
+          }
+        },
       },
       {
         path: 'tags',
         element: <TagsPage />,
-        loader: tagsService.getTags,
+        loader: async () => {
+          try {
+            const tags = await tagsService.getTags();
+            return tags;
+          } catch (err) {
+            return [];
+          }
+        },
       },
       {
         path: 'profile',

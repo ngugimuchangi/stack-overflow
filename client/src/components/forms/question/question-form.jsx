@@ -28,7 +28,7 @@ export default function NewQuestionForm() {
       title,
       text,
       summary,
-      tags: tags.split(','),
+      tags: tags.split(',').map((tag) => tag.trim()),
     });
     alert('Question posted successfully!');
     navigate(`/questions/${question._id}`);
