@@ -10,7 +10,7 @@ To get started with the client-side application, follow these steps:
 1. Clone the repository: `git clone <repository-url>`
 2. Navigate to the client directory: `cd client`
 3. Install the dependencies: `npm install`
-4. Start the application: `npm run dev`
+4. Start the application: `npm start`
 
 The application will start on `http://localhost:3000`.
 
