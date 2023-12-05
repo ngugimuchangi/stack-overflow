@@ -43,3 +43,7 @@
   gap: 0.5rem;
   align-items: flex-end;
 }
+
+.question-details + .answer-vote {
+  margin-block: 1rem;
+}

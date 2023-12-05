@@ -8,7 +8,21 @@
   font-family: inherit;
 }
 
-.delete-btn:hover {
+.delete-btn:hover,
+.downvote-btn:hover {
   background-color: #f44336;
+  border: none;
+  color: white;
+}
+
+.upvote-btn:hover {
+  background-color: #4caf50;
+  border: none;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #2196f3;
+  border: none;
   color: white;
 }

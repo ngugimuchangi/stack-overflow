@@ -1,8 +1,13 @@
 .feedback-container {
   display: flex;
-  margin-block: 2rem;
+  flex-direction: column;
   padding-block: 1rem;
   border-bottom: 1px dotted #000;
+}
+
+.feedback-details {
+  display: flex;
+  margin-block: 2rem;
 }
 
 .feedback-text {

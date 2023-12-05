@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, redirect } from 'react-router-dom';
 import HomePage from '../pages/home/home-page';
 import BaseLayout from '../layouts/base-layout/base-layout';
 import QuestionPage from '../pages/question/question-page';
@@ -10,8 +10,6 @@ import UnauthorizedPage from '../pages/unauthorized/unauthorized-page';
 import TagsPage from '../pages/tags/tags-page';
 import AuthLayout from '../layouts/auth-layout/auth-layout';
 import ProfilePage from '../pages/profile/profile-page';
-import { redirect } from 'react-router-dom';
-
 import questionsService from '../services/questions-service';
 import tagsService from '../services/tags-service';
 import authService from '../services/auth-service';
@@ -25,9 +23,12 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <HomePage />,
-        loader: async () => {
+        loader: async ({ request }) => {
+          const url = new URL(request.url);
+          const query = url.searchParams.toString();
+
           try {
-            const questions = await questionsService.getAllQuestions();
+            const questions = await questionsService.getAllQuestions(query);
             return questions;
           } catch (err) {
             return [];
@@ -44,12 +45,11 @@ const router = createBrowserRouter([
         element: <QuestionPage />,
         loader: async ({ params }) => {
           try {
-            const question = await questionsService.updateQuestion(params.questionId, {
-              action: 'view',
-            });
+            const question = await questionsService.getQuestion(params.questionId);
             return question;
           } catch (err) {
-            return [];
+            console.log(err);
+            return {};
           }
         },
       },
@@ -76,7 +76,7 @@ const router = createBrowserRouter([
             const tags = await tagsService.getTUsersTags();
             return { user, questions, tags };
           } catch (err) {
-            console.log(err);
+            return {};
           }
         },
       },

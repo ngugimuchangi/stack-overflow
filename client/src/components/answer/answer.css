@@ -1,0 +1,28 @@
+.answer {
+  margin-left: 2rem;
+}
+.answer-vote {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.vote-btn,
+.edit-delete-btn {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.vote-btn {
+  margin-inline: auto;
+}
+
+.edit-delete-btn > .btn {
+  width: 80px;
+}
+
+.answer-action-btn {
+  display: flex;
+  gap: 0.5rem;
+}

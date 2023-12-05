@@ -10,8 +10,9 @@ router.use('/:questionId/answers', answerRouter);
 router.get('', controller.getQuestions);
 router.get('/me', authorize, controller.getQuestionsForCurrentUser);
 router.get('/:questionId', controller.getQuestions);
-router.post('/', controller.createQuestion);
-router.patch('/:questionId', controller.updateQuestion);
+router.post('/', authorize, controller.createQuestion);
+router.patch('/:questionId', authorize, controller.updateQuestion);
+router.patch('/:questionId/views', controller.updateViewCount);
 router.delete('/:questionId', authorize, controller.deleteQuestion);
 
 module.exports = router;

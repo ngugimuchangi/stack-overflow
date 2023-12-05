@@ -42,7 +42,7 @@ async function verify(payload, done) {
 function authorize(req, res, next) {
   const middleware = passport.authenticate('jwt', { session: false }, function (err, user) {
     if (err) return next(err);
-    if (!user) return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized user' });
+    if (!user) return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
     req.user = user;
     next();
   });

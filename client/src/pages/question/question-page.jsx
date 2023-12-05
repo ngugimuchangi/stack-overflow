@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import Button from '../../components/button/button';
 import Question from '../../components/question/question';
-import FeedbackCard from '../../components/feedback-card/feedback-card';
 import AnswerForm from '../../components/forms/answer/answer-form';
-import './question-page.css';
 import authService from '../../services/auth-service';
 import answersService from '../../services/answers-service';
+import Answer from '../../components/answer/answer';
+import './question-page.css';
 
 export default function QuestionsPage() {
   const question = useLoaderData();
@@ -15,8 +15,8 @@ export default function QuestionsPage() {
   const [isAnswering, setIsAnswering] = useState(false);
   const [answers, setAnswers] = useState([]);
 
-  const answerEls = answers.map((answer) => (
-    <FeedbackCard key={answer._id} text={'Answered'} info={answer} />
+  const answerEls = answers.map((answer, i) => (
+    <Answer key={answer._id} index={i} answer={answer} updateAnswers={setAnswers} />
   ));
 
   useEffect(() => {

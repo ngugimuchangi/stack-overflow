@@ -9,7 +9,6 @@ class AnswerService {
       globalService.serverUrl + APIs.questionsAPI + `/${questionId}` + APIs.answersAPI;
     const method = 'GET';
     const headers = authService.getAuthHeader();
-
     try {
       const answers = await fetchService.fetchData(answersURL, method, headers);
       return answers;

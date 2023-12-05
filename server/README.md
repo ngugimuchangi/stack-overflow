@@ -42,9 +42,10 @@ The server will start on `http://localhost:8000`.
     - `p`: Page number
     - `t`: Filter by tag names - comma separated list of tag names e.g. `t=tag1,tag2,tag3`
     - `q`: Search query.
-    - `s`: Active, inactive answered questions. `s=active` or `s=inactive`, `answered`
+    - `s`: Active or answered questions, e.g. `s=active` or`s=answered`
 - `GET /questions:questionId`: Get question by id. Available to all users.
 - `PATCH /questions/:questionId`: Edit question by id. Available to admins and question owner.
+- `PATCH /questions/:questionId/views`: Increment question views by id. Available to all users.
 
   - Request body:
     - `title`: string

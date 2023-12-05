@@ -1,0 +1,32 @@
+.action-form {
+  width: 90%;
+  overflow: scroll;
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+  overflow: hidden;
+}
+
+.action-textarea {
+  resize: none;
+  color: #000;
+  margin-bottom: 1rem;
+  padding: 0.5em;
+  font-size: 1em;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.action-textarea:focus {
+  outline: 1px solid #ccc;
+}
+
+.form-btn {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.form-btn > .btn {
+  width: 100px;
+}

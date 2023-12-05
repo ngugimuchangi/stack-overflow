@@ -41,6 +41,7 @@ class AuthController {
         id: user._id.toString(),
         name: user.username,
         status: user.status,
+        reputation: user.reputation,
         exp: Date.now() + jwtOptions.expiresIn,
       };
 

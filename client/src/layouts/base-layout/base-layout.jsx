@@ -20,13 +20,9 @@ export default function BaseLayout() {
   /**
    * Logs the user out.
    */
-  async function logout() {
-    try {
-      await authService.logout();
-      navigate('/');
-    } catch (err) {
-      alert('Server responded with an error!');
-    }
+  function logout() {
+    authService.logout();
+    navigate('/');
   }
 
   return (

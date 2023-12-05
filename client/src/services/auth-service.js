@@ -57,17 +57,8 @@ class AuthService {
    *
    * @returns {Promise<void>} A promise that resolves when the logout is complete.
    */
-  async logout() {
-    const logoutURL = globalService.serverUrl + APIs.authAPI.logout;
-    const method = 'GET';
-    const headers = this.getAuthHeader();
-
-    try {
-      await fetchService.fetchData(logoutURL, method, headers);
-      this.clearToken();
-    } catch (err) {
-      throw err;
-    }
+  logout() {
+    this.clearToken();
   }
 
   /**

@@ -2,19 +2,19 @@ import globalService from './global-service';
 import authService from './auth-service';
 import { APIs } from '../common/api';
 import fetchService from './fetch-service';
+
 class QuestionService {
   /*
    * Gets all questions.
-   *
-   * @returns {Promise<Array>}
+   * @param {string} query - query string to filter questions.
+   * @returns {Promise<Array>} - array of questions.
    */
   async getAllQuestions(query) {
     const questionsURL = globalService.serverUrl + APIs.questionsAPI + (query ? `?${query}` : '');
     const method = 'GET';
-    const headers = authService.getAuthHeader();
 
     try {
-      const questions = await fetchService.fetchData(questionsURL, method, headers);
+      const questions = await fetchService.fetchData(questionsURL, method);
       return questions;
     } catch (err) {
       throw err;
@@ -24,11 +24,16 @@ class QuestionService {
   async getQuestion(questionId) {
     const questionsURL = globalService.serverUrl + APIs.questionsAPI + `/${questionId}`;
     const method = 'GET';
-    const headers = authService.getAuthHeader();
 
     try {
-      const questions = await fetchService.fetchData(questionsURL, method, headers);
-      return questions;
+      let question = await fetchService.fetchData(questionsURL, method);
+      if (
+        question &&
+        (!authService.getCurrentUser() || question.user._id !== authService.getCurrentUser().id)
+      ) {
+        question = await fetchService.fetchData(questionsURL + '/views', 'PATCH');
+      }
+      return question;
     } catch (err) {
       throw err;
     }

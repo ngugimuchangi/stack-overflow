@@ -53,6 +53,7 @@ class AnswersController {
 
       const answerRes = {
         ...formatDoc(question.answers[question.answers.length - 1], answerProjection),
+        questionId,
         ansBy: formatDoc(user, userProjection),
       };
       res.status(HTTP.CREATED).json(answerRes);
@@ -107,7 +108,8 @@ class AnswersController {
         answers.map(async (answer) => {
           const answerRes = {
             ...formatDoc(answer, answerProjection),
-            user: await formatDoc(await User.findById(answer.ansBy), userProjection),
+            questionId,
+            ansBy: formatDoc(await User.findById(answer.ansBy), userProjection),
           };
           return answerRes;
         })
@@ -194,6 +196,7 @@ class AnswersController {
 
       const answerRes = {
         ...formatDoc(answer, projection),
+        questionId,
         ansBy: formatDoc(answeredBy, userProjection),
       };
       res.status(HTTP.OK).json(answerRes);

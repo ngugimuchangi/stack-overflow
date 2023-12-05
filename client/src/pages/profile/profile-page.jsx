@@ -4,6 +4,7 @@ import './profile-page.css';
 import { useLoaderData } from 'react-router-dom';
 import userService from '../../services/user-service';
 import tagsService from '../../services/tags-service';
+import authService from '../../services/auth-service';
 import questionsService from '../../services/questions-service';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,8 +26,13 @@ export default function ProfilePage() {
   const [userQuestions, setUserQuestions] = useState(questions);
 
   async function deleteUser(id) {
-    await userService.deleteUser();
-    navigate('/');
+    try {
+      await userService.deleteUser();
+      authService.logout();
+      navigate('/');
+    } catch (err) {
+      alert('Oops! Something went wrong. Please try again.');
+    }
   }
 
   async function deleteTag(id) {
@@ -51,6 +57,10 @@ export default function ProfilePage() {
             <span className='label'>Email:</span>
             &nbsp; {user?.email}
           </div>
+          <div className='email'>
+            <span className='label'>Email:</span>
+            &nbsp; {user?.reputation}
+          </div>
         </div>
 
         <div className='section user-tags'>
@@ -73,8 +83,8 @@ export default function ProfilePage() {
               <UserInfoCard
                 key={index}
                 info={question.title}
-                id={question._id}
                 handleDelete={async () => await deleteQuestion(question._id)}
+                link={`/questions/${question._id}`}
               />
             ))}
           </ul>
@@ -82,7 +92,7 @@ export default function ProfilePage() {
       </div>
 
       <div className='button-container'>
-        <Button text='Delete User' classes='delete-btn del-user-btn' onClick={deleteUser} />
+        <Button text='Delete Account' classes='delete-btn del-user-btn' onClick={deleteUser} />
       </div>
     </div>
   );

@@ -130,6 +130,12 @@ class QuestionController {
    * "votes": 5,
    * "views": 10,
    * "active": true,
+   * "answers": 2
+   * "user": {
+   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *    "username": "user1",
+   *    "reputation": 0
+   *  },
    * "createdAt": "2020-01-02T07:26:02.000Z",
    * "updatedAt": "2020-01-02T07:26:02.000Z"
    * },
@@ -146,14 +152,14 @@ class QuestionController {
       'title',
       'summary',
       'text',
-      'user',
       'tags',
-      'createdAt',
-      'updatedAt',
       'votes',
       'answers',
       'views',
       'active',
+      'user',
+      'createdAt',
+      'updatedAt',
     ];
     const userProjection = ['_id', 'username', 'reputation'];
     const match = {};
@@ -296,6 +302,11 @@ class QuestionController {
    *  "tags": ["tag1", "tag2"],
    *  "votes": 5,
    *  "views": 10,
+   *  "user": {
+   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *    "username": "user1",
+   *    "reputation": 0
+   *   },
    *  "active": false,
    *  "updatedAt": "2020-01-02T07:26:02.000Z"
    *  "createdAt": "2020-01-02T07:26:02.000Z",
@@ -312,12 +323,12 @@ class QuestionController {
       'title',
       'summary',
       'text',
-      'user',
       'tags',
       'votes',
       'answers',
       'views',
       'active',
+      'user',
       'createdAt',
       'updatedAt',
     ];
@@ -357,8 +368,6 @@ class QuestionController {
           question.votes -= 1;
           askedBy.reputation -= DOWNVOTE_REPS;
         }
-      } else if (action === 'view') {
-        question.views += 1;
       } else {
         return res.status(HTTP.BAD_REQUEST).json({ message: 'Invalid action' });
       }
@@ -372,6 +381,69 @@ class QuestionController {
         answers: question.answers.length,
       };
 
+      return res.status(HTTP.OK).json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  /**
+   * Update question view count by id
+   * @param {Request} req Request object
+   * @param {Response} res Response object
+   * @param {Next} next Next function
+   * @example
+   * Sample request: PUT /questions/1234567890/view
+   * Sample response:
+   * {
+   *  "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *  "title": "Question 1",
+   *  "summary": "Question 1 summary",
+   *  "text": "Question 1 text",
+   *  "tags": ["tag1", "tag2"],
+   *  "votes": 5,
+   *  "views": 10,
+   *  "active": true,
+   *  "answers": 2
+   *  "createdAt": "2020-01-02T07:26:02.000Z",
+   *  "updatedAt": "2020-01-02T07:26:02.000Z",
+   *  "user": {
+   *   "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *  "username": "user1",
+   *  "reputation": 0
+   *  },
+   * }
+   */
+  async updateViewCount(req, res, next) {
+    const { questionId } = req.params;
+    const userProjection = ['_id', 'username', 'reputation'];
+    const projection = [
+      '_id',
+      'title',
+      'summary',
+      'text',
+      'user',
+      'tags',
+      'votes',
+      'answers',
+      'views',
+      'active',
+      'createdAt',
+      'updatedAt',
+    ];
+
+    try {
+      const question = await Question.findById(questionId);
+      if (!question) return res.status(HTTP.NOT_FOUND).json({ message: 'Question not found' });
+      await question.populate('user');
+      question.views += 1;
+      await question.save();
+
+      const response = {
+        ...formatDoc(question, projection),
+        user: formatDoc(question.user, userProjection),
+        answers: question.answers.length,
+      };
       return res.status(HTTP.OK).json(response);
     } catch (err) {
       next(err);
