@@ -13,8 +13,8 @@ const User = new Schema(
   {
     timestamps: true,
     methods: {
-      hashPassword(password) {
-        this.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+      hashPassword() {
+        this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
       },
       isValidPassword(password) {
         return bcrypt.compareSync(password, this.password);

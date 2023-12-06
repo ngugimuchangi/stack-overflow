@@ -9,25 +9,29 @@ async function setUp() {
     const existingAdmin = await User.findOne({ email: 'test@admin.com' });
     const existingTestUser = await User.findOne({ email: 'test@user.com' });
 
-    const admin = new User({
-      username: 'admin',
-      email: 'test@admin.com',
-      password: 'admin123',
-      status: 'Admin',
-      reputation: 100,
-    });
-    admin.hashPassword();
+    if (!existingAdmin) {
+      const admin = new User({
+        username: 'admin',
+        email: 'test@admin.com',
+        password: 'admin123',
+        status: 'Admin',
+        reputation: 100,
+      });
+      admin.hashPassword();
+      await admin.save();
+    }
 
-    const user = new User({
-      username: 'test',
-      email: 'test@user.com',
-      password: 'user123',
-      reputation: 100,
-    });
-    user.hashPassword();
+    if (!existingTestUser) {
+      const user = new User({
+        username: 'test',
+        email: 'test@user.com',
+        password: 'user123',
+        reputation: 100,
+      });
+      user.hashPassword();
+      await user.save();
+    }
 
-    if (!existingAdmin) await admin.save();
-    if (!existingTestUser) await user.save();
     return 'Admin and test user created';
   } catch (err) {
     throw new Error(err.message);
