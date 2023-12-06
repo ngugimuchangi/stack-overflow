@@ -282,7 +282,9 @@ class QuestionController {
         };
         return formattedRes;
       });
-      return res.status(HTTP.OK).json({ count: count[0].count, questions: questionRes });
+      return res
+        .status(HTTP.OK)
+        .json({ count: count[0]?.count || questions.length, questions: questionRes });
     } catch (err) {
       next(err);
     }
