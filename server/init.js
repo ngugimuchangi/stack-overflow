@@ -16,6 +16,7 @@ async function setUp() {
       status: 'Admin',
       reputation: 100,
     });
+    admin.hashPassword();
 
     const user = new User({
       username: 'test',
@@ -23,6 +24,8 @@ async function setUp() {
       password: 'user123',
       reputation: 100,
     });
+    user.hashPassword();
+
     if (!existingAdmin) await admin.save();
     if (!existingTestUser) await user.save();
     return 'Admin and test user created';
