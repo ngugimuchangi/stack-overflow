@@ -136,7 +136,7 @@ class UserController {
       const user = new User({ email, username, password });
       if (statuses.includes(status)) user.status = status;
 
-      user.hashPassword();
+      user.hashPassword(password);
       await user.save();
 
       res.status(HTTP.CREATED).json(formatDoc(user, resProps));
