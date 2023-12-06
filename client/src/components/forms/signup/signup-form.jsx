@@ -13,7 +13,6 @@ export default function SignupForm() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   /**
@@ -26,19 +25,15 @@ export default function SignupForm() {
     if (!username || !email || !password) return;
     try {
       await userServices.signup(username, email, password);
+      alert('Signup successful. Please login.');
       navigate('/login');
     } catch (err) {
-      setError('Username or email already exists');
-      const timeoutId = setTimeout(() => {
-        setError(''), 5000;
-        clearTimeout(timeoutId);
-      });
+      alert('Signup failed. Please try again.');
     }
   };
 
   return (
     <form className='signup-form' onSubmit={handleSubmit}>
-      <div className={error ? 'error' : ''}>{error}</div>
       <label>
         Username:
         <input
