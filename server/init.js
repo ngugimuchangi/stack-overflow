@@ -6,19 +6,26 @@ const User = require('./models/users');
  */
 async function setUp() {
   try {
-    const existingAdmin = await User.findOne({ email: 'test@admin123' });
-    if (existingAdmin) {
-      return 'Admin user already exists';
-    }
+    const existingAdmin = await User.findOne({ email: 'test@admin.com' });
+    const existingTestUser = await User.findOne({ email: 'test@user.com' });
 
-    const user = new User({
+    const admin = new User({
       username: 'admin',
       email: 'test@admin.com',
       password: 'admin123',
       status: 'Admin',
+      reputation: 100,
     });
-    await user.save();
-    return 'Admin user created';
+
+    const user = new User({
+      username: 'test',
+      email: 'test@user.com',
+      password: 'user123',
+      reputation: 100,
+    });
+    if (!existingAdmin) await admin.save();
+    if (!existingTestUser) await user.save();
+    return 'Admin and test user created';
   } catch (err) {
     throw new Error(err.message);
   }
