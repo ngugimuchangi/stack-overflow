@@ -1,16 +1,33 @@
 import { useState } from 'react';
 import FeedbackCard from '../feedback-card/feedback-card';
 import Button from '../button/button';
-import ActionForm from '../forms/action/action-form';
+import TextEditForm from '../forms/text-edit/text-edit-form';
 import answersService from '../../services/answers-service';
 import authService from '../../services/auth-service';
 import './answer.css';
 
+/**
+ * Answer component for displaying an answer.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Object} props.answer - The answer object.
+ * @param {Function} props.updateAnswers - The function to update the answers.
+ *
+ * @returns {JSX.Element} The Answer component.
+ */
 export default function Answer({ answer, updateAnswers }) {
   const [isEditing, setIsEditing] = useState(false);
   const isAnswerOwner = authService.getCurrentUser()?.id === answer.ansBy._id;
   const currentUser = authService.getCurrentUser();
 
+  /**
+   * Handles the vote event.
+   *
+   * @param {Object} vote - The vote object.
+   * @param {string} vote.action - The vote action.
+   *
+   * @returns {Promise<void>}
+   */
   async function voteAnswer(vote) {
     const { questionId, _id: answerId } = answer;
     try {
@@ -25,6 +42,13 @@ export default function Answer({ answer, updateAnswers }) {
     }
   }
 
+  /**
+   * Handles the edit event.
+   *
+   * @param {string} text - The text to edit.
+   *
+   * @returns {Promise<void>}
+   */
   async function editAnswer(text) {
     const { questionId, _id: answerId } = answer;
     try {
@@ -41,6 +65,11 @@ export default function Answer({ answer, updateAnswers }) {
     setIsEditing(false);
   }
 
+  /**
+   * Handles the delete event.
+   *
+   * @returns {Promise<void>}
+   */
   async function deleteAnswer() {
     const { questionId, _id: answerId } = answer;
     try {
@@ -51,6 +80,10 @@ export default function Answer({ answer, updateAnswers }) {
     }
   }
 
+  /**
+   * Handles the cancel edit event.
+   * @returns {void}
+   */
   function cancelEdit() {
     setIsEditing(false);
   }
@@ -64,12 +97,16 @@ export default function Answer({ answer, updateAnswers }) {
             <>
               <div className='vote-btn'>
                 <Button
-                  classes={`upvote-btn ${currentUser?.reputation < 50 ? 'btn-disabled' : ''}`}
+                  classes={`upvote-btn ${
+                    currentUser?.reputation < 50 || isAnswerOwner ? 'btn-disabled' : ''
+                  }`}
                   text='&uarr; Upvote'
                   onClick={() => voteAnswer({ action: 'upvote' })}
                 />
                 <Button
-                  classes={`downvote-btn ${currentUser?.reputation < 50 ? 'btn-disabled' : ''}`}
+                  classes={`downvote-btn ${
+                    currentUser?.reputation < 50 || isAnswerOwner ? 'btn-disabled' : ''
+                  }`}
                   text='&darr; Downvote'
                   onClick={() => voteAnswer({ action: 'downvote' })}
                 />
@@ -90,7 +127,7 @@ export default function Answer({ answer, updateAnswers }) {
           )}
         </div>
         {isEditing && (
-          <ActionForm
+          <TextEditForm
             buttonText='Update'
             initialText={answer.text}
             onSubmit={editAnswer}

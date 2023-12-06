@@ -4,6 +4,7 @@ import Button from '../button/button';
 import globalService from '../../services/global-service';
 import authService from '../../services/auth-service';
 import questionsService from '../../services/questions-service';
+import QuestionForm from '../forms/question/question-form';
 import './question.css';
 
 function Question({ question }) {
@@ -14,11 +15,9 @@ function Question({ question }) {
   const currentUser = authService.getCurrentUser();
   const navigate = useNavigate();
 
-  function handleEditQuestion(newText) {
-    questionsService
-      .updateQuestion(question._id, { action: 'update', text: newText })
-      .then((updatedQuestion) => setQuestionState(updatedQuestion))
-      .catch(() => alert('Oops! Something went wrong. Please try again.'));
+  function updateQuestionAfterEdit(updatedQuestion) {
+    setQuestionState(updatedQuestion);
+    setIsEditing(false);
   }
 
   function handleVoteQuestion(action) {
@@ -59,12 +58,16 @@ function Question({ question }) {
           <>
             <div className='vote-btn'>
               <Button
-                classes={`upvote-btn ${currentUser?.reputation < 50 ? 'btn-disabled' : ''}`}
+                classes={`upvote-btn ${
+                  currentUser?.reputation < 50 || isQuestionOwner ? 'btn-disabled' : ''
+                }`}
                 text='&uarr; Upvote'
                 onClick={() => handleVoteQuestion({ action: 'upvote' })}
               />
               <Button
-                classes={`downvote-btn ${currentUser?.reputation < 50 ? 'btn-disabled' : ''}`}
+                classes={`downvote-btn ${
+                  currentUser?.reputation < 50 || isQuestionOwner ? 'btn-disabled' : ''
+                }`}
                 text='&darr; Downvote'
                 onClick={() => handleVoteQuestion({ action: 'downvote' })}
               />
@@ -85,11 +88,11 @@ function Question({ question }) {
         )}
       </div>
       {isEditing && (
-        <ActionForm
-          buttonText='Update'
-          initialText={questionState.text}
-          onSubmit={handleEditQuestion}
-          onCancel={cancelEdit}
+        <QuestionForm
+          status='edit'
+          question={questionState}
+          cancelEdit={cancelEdit}
+          afterUpdateQuestion={updateQuestionAfterEdit}
         />
       )}
     </div>

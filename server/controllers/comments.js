@@ -186,14 +186,14 @@ class CommentsController {
       } else if (action === 'upvote') {
         if (commentBy.reputation < MIN_REPS)
           return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
-        else {
+        if (!isSameId(commentBy._id, user._id)) {
           comment.votes += 1;
           commentBy.reputation += UPVOTE_REPS;
         }
       } else if (action === 'downvote') {
         if (commentBy.reputation < MIN_REPS)
           return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
-        else {
+        if (!isSameId(commentBy._id, user._id)) {
           comment.votes -= 1;
           commentBy.reputation -= DOWNVOTE_REPS;
         }

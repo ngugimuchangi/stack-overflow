@@ -147,7 +147,7 @@ class TagsController {
 
       await Question.updateMany({ tags: tag._id }, { $pull: { tags: tag._id } });
 
-      await tag.remove();
+      await Tag.deleteOne(filter);
 
       res.status(HTTP.NO_CONTENT).end();
     } catch (error) {

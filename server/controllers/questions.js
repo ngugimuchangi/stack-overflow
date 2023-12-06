@@ -120,25 +120,29 @@ class QuestionController {
    * Sample request: GET /questions
    * Sample request query: ?q=question&t=tag1;tag2&p=0
    * Sample response:
-   * [
    * {
-   *  "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
-   * "title": "Question 1",
-   * "summary": "Question 1 summary",
-   * "text": "Question 1 text",
-   * "tags": ["tag1", "tag2"],
-   * "votes": 5,
-   * "views": 10,
-   * "active": true,
-   * "answers": 2
-   * "user": {
-   *    "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
-   *    "username": "user1",
-   *    "reputation": 0
-   *  },
-   * "createdAt": "2020-01-02T07:26:02.000Z",
-   * "updatedAt": "2020-01-02T07:26:02.000Z"
-   * },
+   *  count: 1,
+   *  questions: [
+   *    {
+   *      "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *      "title": "Question 1",
+   *      "summary": "Question 1 summary",
+   *      "text": "Question 1 text",
+   *      "tags": ["tag1", "tag2"],
+   *      "votes": 5,
+   *      "views": 10,
+   *      "active": true,
+   *      "answers": 2
+   *      "user": {
+   *         "_id": "5e0f0f6a8b40fc1b8c3b9f3e",
+   *         "username": "user1",
+   *         "reputation": 0
+   *       },
+   *      "createdAt": "2020-01-02T07:26:02.000Z",
+   *      "updatedAt": "2020-01-02T07:26:02.000Z"
+   *    },
+   *  ]
+   * }
    */
   async getQuestions(req, res, next) {
     const { q: query, s: status, t } = req.query;
@@ -212,6 +216,17 @@ class QuestionController {
           active: { $first: '$active' },
         },
       },
+    ];
+
+    const countPipeline = [
+      ...pipeline,
+      {
+        $count: 'count',
+      },
+    ];
+
+    const resPipeline = [
+      ...pipeline,
       {
         $lookup: {
           from: 'users',
@@ -256,7 +271,8 @@ class QuestionController {
         };
         return res.status(HTTP.OK).json(response);
       }
-      const questions = await Question.aggregate(pipeline);
+      const count = await Question.aggregate(countPipeline);
+      const questions = await Question.aggregate(resPipeline);
       const questionRes = questions.map((question) => {
         const formattedRes = {
           ...formatDoc(question, projection),
@@ -266,7 +282,7 @@ class QuestionController {
         };
         return formattedRes;
       });
-      return res.status(HTTP.OK).json(questionRes);
+      return res.status(HTTP.OK).json({ count: count[0].count, questions: questionRes });
     } catch (err) {
       next(err);
     }
@@ -357,14 +373,16 @@ class QuestionController {
       } else if (action === 'upvote') {
         if (user.reputation < MIN_REPS)
           return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
-        else {
+
+        if (!isSameId(askedBy._id, user._id)) {
           question.votes += 1;
           askedBy.reputation += UPVOTE_REPS;
         }
       } else if (action === 'downvote') {
         if (user.reputation < MIN_REPS)
           return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
-        else {
+
+        if (!isSameId(askedBy._id, user._id)) {
           question.votes -= 1;
           askedBy.reputation -= DOWNVOTE_REPS;
         }

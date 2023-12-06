@@ -1,13 +1,20 @@
+.base-layout {
+  position: relative;
+  padding-top: 8.5rem;
+}
+
 .base-layout-content {
   display: flex;
   align-items: stretch;
   align-content: stretch;
 }
+
 .base-layout-content {
   width: 90%;
   max-width: 1200px;
   margin-inline: auto;
 }
+
 .base-layout-content .base-layout-main-content {
   flex: 1;
   padding: 2rem 1rem;

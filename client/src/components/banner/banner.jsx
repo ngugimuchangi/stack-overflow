@@ -1,9 +1,13 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import './banner.css';
 import Search from '../search/search';
 import logo from '../../assets/logo.svg';
+import './banner.css';
 
+/**
+ * Banner component
+ *
+ * @returns {JSX.Element} Banner component
+ */
 function Banner() {
   return (
     <header>

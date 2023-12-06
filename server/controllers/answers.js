@@ -176,14 +176,14 @@ class AnswersController {
       } else if (action === 'upvote') {
         if (user.reputation < MIN_REPS)
           return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
-        else {
+        if (!isSameId(answeredBy._id, user._id)) {
           answer.votes += 1;
           answeredBy.reputation += UPVOTE_REPS;
         }
       } else if (action === 'downvote') {
         if (user.reputation < MIN_REPS)
           return res.status(HTTP.UNAUTHORIZED).json({ message: 'Unauthorized' });
-        else {
+        if (!isSameId(answeredBy._id, user._id)) {
           answer.votes -= 1;
           answeredBy.reputation -= DOWNVOTE_REPS;
         }
