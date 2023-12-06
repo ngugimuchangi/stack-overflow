@@ -76,6 +76,7 @@ class QuestionController {
         await Promise.all(
           tags.map(async (tag) => {
             let tagDoc = await Tag.findOne({ name: tag });
+
             if (!tagDoc && user.reputation >= MIN_REPS) {
               tagDoc = new Tag({ name: tag, createdBy: user._id });
               await tagDoc.save();
@@ -195,7 +196,10 @@ class QuestionController {
         },
       },
       {
-        $unwind: '$tags',
+        $unwind: {
+          path: '$tags',
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $match: match,
