@@ -17,7 +17,7 @@ async function setUp() {
         status: 'Admin',
         reputation: 100,
       });
-      admin.hashPassword();
+      admin.hashPassword('admin123');
       await admin.save();
     }
 
@@ -28,7 +28,7 @@ async function setUp() {
         password: 'user123',
         reputation: 100,
       });
-      user.hashPassword();
+      user.hashPassword('user123');
       await user.save();
     }
 
