@@ -17,11 +17,11 @@ import userService from '../services/user-service';
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '',
     element: <BaseLayout />,
     children: [
       {
-        path: '',
+        path: '/',
         element: <HomePage />,
         loader: async ({ request }) => {
           const url = new URL(request.url);
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
         },
       },
       {
-        path: 'new-question',
+        path: '/new-question',
         element: <NewQuestionPage />,
         loader: () => !authService.isLoggedIn() && redirect('/unauthorized'),
       },
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
         },
       },
       {
-        path: 'tags',
+        path: '/tags',
         element: <TagsPage />,
         loader: async () => {
           try {
@@ -66,7 +66,7 @@ const router = createBrowserRouter([
         },
       },
       {
-        path: 'profile',
+        path: '/profile',
         element: <ProfilePage />,
         loader: async () => {
           if (!authService.isLoggedIn()) return redirect('/unauthorized');
@@ -83,24 +83,24 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '/',
+    path: '',
     element: <AuthLayout />,
     children: [
       {
-        path: 'login',
+        path: '/login',
         element: <LoginPage />,
       },
       {
-        path: 'signup',
+        path: '/signup',
         element: <SignupPage />,
       },
     ],
   },
   {
-    path: '/',
+    path: '',
     children: [
       {
-        path: 'unauthorized',
+        path: '/unauthorized',
         element: <UnauthorizedPage />,
       },
       {

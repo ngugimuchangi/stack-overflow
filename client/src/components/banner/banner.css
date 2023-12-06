@@ -1,11 +1,18 @@
+header {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 .header-content {
   background-color: #ccc;
   padding: 1rem 0.5rem;
   display: flex;
-
   align-items: baseline;
   border-bottom: 1px solid #000;
 }
+
 .logo-and-text {
   display: flex;
   align-items: baseline;

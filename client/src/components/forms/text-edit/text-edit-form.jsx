@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import Button from '../../button/button';
-import './action-form.css';
+import './text-edit-form.css';
 
-export default function ActionForm({
+export default function TextEditForm({
   onSubmit,
   initialText = '',
   buttonText = 'Submit',

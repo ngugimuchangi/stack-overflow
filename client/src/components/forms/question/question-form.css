@@ -1,6 +1,7 @@
 .question-form {
   width: 90%;
-  margin: auto;
+  margin-inline: auto;
+  margin-bottom: 2rem;
 }
 
 .question-form :where(input, textarea, label, button) {
@@ -17,23 +18,17 @@
 }
 
 .text-area {
-  display: block;
-  height: 20rem;
+  font-family: inherit;
   background-color: #fff;
   padding: 0.5rem;
   color: black;
+  resize: none;
 }
 
-.text-area-summary {
-  display: block;
-  height: 10rem;
-  color: black;
-  background-color: #fff;
-  padding: 0.5rem;
-}
 textarea {
   font-family: inherit;
 }
+
 .question-form .btn {
   margin-top: 1rem;
 }

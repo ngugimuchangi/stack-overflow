@@ -13,9 +13,10 @@ export default function Search() {
   /**
    * Fetches all questions from the question service and logs them.
    */
-  function search(event) {
+  async function search(event) {
     event.preventDefault();
-    navigate(`/?t=${searchTerm}`);
+    if (!searchTerm) return;
+    navigate(`/?q=${searchTerm}`);
   }
   return (
     <form className='search-form' onSubmit={search}>

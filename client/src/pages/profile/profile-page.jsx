@@ -25,9 +25,12 @@ export default function ProfilePage() {
   const [userTags, setUserTags] = useState(tags);
   const [userQuestions, setUserQuestions] = useState(questions);
 
-  async function deleteUser(id) {
+  /**
+   * Deletes the user account.
+   */
+  async function deleteAccount() {
     try {
-      await userService.deleteUser();
+      await userService.deleteAccount();
       authService.logout();
       navigate('/');
     } catch (err) {
@@ -35,11 +38,21 @@ export default function ProfilePage() {
     }
   }
 
+  /**
+   * Deletes a tag.
+   * @param {string} id - The tag id.
+   * @returns {Promise<void>}
+   */
   async function deleteTag(id) {
     await tagsService.deleteTag(id);
     setUserTags(userTags.filter((tag) => tag._id !== id));
   }
 
+  /**
+   * Deletes a question.
+   * @param {string} id - The question id.
+   * @returns {Promise<void>}
+   */
   async function deleteQuestion(id) {
     await questionsService.deleteQuestion(id);
     setUserQuestions(userQuestions.filter((question) => question._id !== id));
@@ -58,7 +71,7 @@ export default function ProfilePage() {
             &nbsp; {user?.email}
           </div>
           <div className='email'>
-            <span className='label'>Email:</span>
+            <span className='label'>Reputation:</span>
             &nbsp; {user?.reputation}
           </div>
         </div>
@@ -92,7 +105,7 @@ export default function ProfilePage() {
       </div>
 
       <div className='button-container'>
-        <Button text='Delete Account' classes='delete-btn del-user-btn' onClick={deleteUser} />
+        <Button text='Delete Account' classes='delete-btn del-user-btn' onClick={deleteAccount} />
       </div>
     </div>
   );

@@ -27,8 +27,8 @@ class FetchService {
     };
     try {
       const response = await fetch(url, options);
-      if (!response.ok) throw new Error(response.statusText);
       if (response.status === 204) return;
+      if (!response.ok) throw new Error({ status: response.statusText, res: response.json() });
       return response.json();
     } catch (err) {
       throw err;

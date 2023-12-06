@@ -36,8 +36,9 @@ class UserService {
     }
   }
 
-  async deleteUser(id) {
-    const userURL = globalService.serverUrl + APIs.userAPI + '/{id}';
+  async deleteAccount() {
+    const user = await authService.getCurrentUser();
+    const userURL = globalService.serverUrl + APIs.userAPI + `/${user.id}`;
     const method = 'DELETE';
     const headers = authService.getAuthHeader();
     try {
