@@ -92,7 +92,7 @@ export default function QuestionForm({
       {status === 'new' && (
         <>
           <label>Tags:</label>
-          <input type='button' value={tags} onChange={(e) => setTags(e.target.value)} required />
+          <input type='text' value={tags} onChange={(e) => setTags(e.target.value)} required />
         </>
       )}
       {status !== 'new' && <Button text='Cancel' classes='action-btn' onClick={cancelEdit} />}
