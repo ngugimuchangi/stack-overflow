@@ -1,0 +1,673 @@
+{
+	"info": {
+		"_postman_id": "ab920855-543a-4034-959f-d03b963f7676",
+		"name": "Fake SO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26755433"
+	},
+	"item": [
+		{
+			"name": "Tags",
+			"item": [
+				{
+					"name": "Get all tags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/tags",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current user tags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/tags/me",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"tags",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/auth/logout",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create new user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"email\": \"dante@mail.com\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/users",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/6567bde053fc3a550cd97505",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"6567bde053fc3a550cd97505"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/65679b3c76b95d272a2241b5",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"65679b3c76b95d272a2241b5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/me",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Questions",
+			"item": [
+				{
+					"name": "Get all questions",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/questions",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Question",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"title\": \"Django question\",\n   \"summary\": \"How do you create your django app\",\n   \"text\": \"Need help configuring djago on vercel\",\n   \"tags\": [\"python\", \"django\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/questions",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get question by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/questions/656c3f2d7dbc2195fbfc0beb",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c3f2d7dbc2195fbfc0beb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update question",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"upvote\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/questions/656c841fa7e62886b9798942",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c841fa7e62886b9798942"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete question",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/questions/656c94d894188c4754044341",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c94d894188c4754044341"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current user questions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/questions/me",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Increase view of a question",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/questions/656c841fa7e62886b9798942/views",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c841fa7e62886b9798942",
+								"views"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Answers",
+			"item": [
+				{
+					"name": "Get all answers for a question",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/questions/656c3f2d7dbc2195fbfc0beb/answers/",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c3f2d7dbc2195fbfc0beb",
+								"answers",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new answer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"Another one\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/questions/656c3f2d7dbc2195fbfc0beb/answers",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c3f2d7dbc2195fbfc0beb",
+								"answers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update answer",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"Patched this answer\",\n    \"action\": \"upvote\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/questions/656c3f2d7dbc2195fbfc0beb/answers/656c6829bd8b326df0a19600",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c3f2d7dbc2195fbfc0beb",
+								"answers",
+								"656c6829bd8b326df0a19600"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Answer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/questions/656c3f2d7dbc2195fbfc0beb/answers/656c68a8447a0b2883b1def0",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c3f2d7dbc2195fbfc0beb",
+								"answers",
+								"656c68a8447a0b2883b1def0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Post comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"That's giga chad stuff\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/questions/656c3f2d7dbc2195fbfc0beb/answers/656c6829bd8b326df0a19600/comments",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c3f2d7dbc2195fbfc0beb",
+								"answers",
+								"656c6829bd8b326df0a19600",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all comments for an answer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/questions/656c3f2d7dbc2195fbfc0beb/answers/656c6829bd8b326df0a19600/comments?p=1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c3f2d7dbc2195fbfc0beb",
+								"answers",
+								"656c6829bd8b326df0a19600",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "p",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update comment",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"update\",\n    \"text\": \"Edited my first comment\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/questions/656c3f2d7dbc2195fbfc0beb/answers/656c6829bd8b326df0a19600/comments/656c7d905ba02cd4910cdae3",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c3f2d7dbc2195fbfc0beb",
+								"answers",
+								"656c6829bd8b326df0a19600",
+								"comments",
+								"656c7d905ba02cd4910cdae3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete comment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/questions/656c3f2d7dbc2195fbfc0beb/answers/656c6829bd8b326df0a19600/comments/656c7d905ba02cd4910cdae3",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"questions",
+								"656c3f2d7dbc2195fbfc0beb",
+								"answers",
+								"656c6829bd8b326df0a19600",
+								"comments",
+								"656c7d905ba02cd4910cdae3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server",
+			"value": "http://127.0.01:8000",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "dante@mail.com",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "123",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "testuser",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY1NmMyNjI0YzYxOTE1NmQxOWVmZjNkMyIsIm5hbWUiOiJ0ZXN0dXNlciIsInN0YXR1cyI6IkdlbmVyYWwiLCJleHAiOjE3MDE4MDE4MTcwMzZ9.VNd3yTxqboxLcRvKmTOPSTYddq1aitfTu3Z-7Fv7jXg",
+			"type": "string"
+		}
+	]
+}
