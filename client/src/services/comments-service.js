@@ -1,4 +1,4 @@
-import globalService from './global';
+import globalService from './global-service';
 import { APIs } from '../common/api';
 
 class CommentsService {
@@ -9,3 +9,5 @@ class CommentsService {
 
   async createComment(questionId, answerId, comment) {}
 }
+
+export default new CommentsService();
